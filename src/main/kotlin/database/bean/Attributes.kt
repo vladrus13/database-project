@@ -1,0 +1,31 @@
+package database.bean
+
+import org.json.JSONArray
+
+class Attributes(val list : Set<String>) {
+    companion object {
+        fun read(attributes : String, separator : String = ",") : Attributes {
+            return Attributes(attributes.split(separator).map { it.trim() }.toSet())
+        }
+
+        fun read(json : JSONArray) : Attributes {
+            return Attributes(json.map { it.toString().trim() }.toSet())
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as Attributes
+        if (list != other.list) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return list.hashCode()
+    }
+
+    fun asString(separator: String = ", ", prefix : String = "(", postfix : String = ")"): String {
+        return list.joinToString(separator = separator, prefix = prefix, postfix = postfix)
+    }
+}

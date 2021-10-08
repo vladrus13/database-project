@@ -11,7 +11,9 @@ repositories {
     mavenCentral()
 }
 
-
+dependencies {
+    implementation("org.json:json:20210307")
+}
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
