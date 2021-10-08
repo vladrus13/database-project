@@ -2,7 +2,7 @@ package database.bean
 
 import org.json.JSONArray
 
-class Attributes(val list : Set<String>) {
+class Attributes(val attributes : Set<String>) {
     companion object {
         fun read(attributes : String, separator : String = ",") : Attributes {
             return Attributes(attributes.split(separator).map { it.trim() }.toSet())
@@ -17,15 +17,19 @@ class Attributes(val list : Set<String>) {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as Attributes
-        if (list != other.list) return false
+        if (attributes != other.attributes) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return list.hashCode()
+        return attributes.hashCode()
     }
 
     fun asString(separator: String = ", ", prefix : String = "(", postfix : String = ")"): String {
-        return list.joinToString(separator = separator, prefix = prefix, postfix = postfix)
+        return attributes.joinToString(separator = separator, prefix = prefix, postfix = postfix)
+    }
+
+    operator fun iterator() : Iterator<String> {
+        return attributes.iterator()
     }
 }
