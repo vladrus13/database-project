@@ -1,0 +1,2 @@
+enemy_id -> enemy_type, unit_id, enemy_current_state, enemy_coordinates, map_id
+map_id, enemy_coordinates -> enemy_id

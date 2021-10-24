@@ -4,7 +4,7 @@ import org.json.JSONArray
 
 class Attributes(val attributes : Set<String>) {
     companion object {
-        fun read(attributes : String, separator : String = ",") : Attributes {
+        fun read(attributes : String, separator : String = "\n") : Attributes {
             return Attributes(attributes.split(separator).map { it.trim() }.toSet())
         }
 
