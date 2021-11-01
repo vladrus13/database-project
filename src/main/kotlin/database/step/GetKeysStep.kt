@@ -11,6 +11,7 @@ class GetKeysStep : RelationRunStep() {
     override fun run(input: Relation): Result<Relation> {
         val keys = input.getKeys()
         val preResult = Result.PreResult()
+        preResult.shortInfo.appendLine("Keys get from relation ${input.name}")
         preResult += keys.preResult
         preResult.shortInfo.appendLine(
             keys.result.getStringOfCollection(

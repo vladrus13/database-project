@@ -1,16 +1,25 @@
 
 
+Keys get from relation inventory
 {[inventory_real_item_id]
 ,[inventory_item_id]}
+Keys get from relation map
 {[map_id]}
+Keys get from relation hero
 {[world_id, map_id, hero_coordinates]
 ,[hero_id]}
+Keys get from relation unit
 {[unit_id]}
+Keys get from relation enemy
 {[enemy_coordinates, map_id]
 ,[enemy_id]}
+Keys get from relation account
 {[account_login]
 ,[account_id]}
+Keys get from relation item
 {[item_id]}
+Keys get from relation friendship
 {[account_id]}
+Keys get from relation world
 {[world_id]}
 
