@@ -13,6 +13,7 @@ abstract class RelationRunStep : Step<Relations> {
         val preResult = Result.PreResult()
         val relationsInput = input as Relations
         return Result(preResult, Relations(relationsInput.relations.map {
+            preResult.shortInfoAppendLine("Take relation: ${it.name}")
             val runner = run(it)
             preResult += runner.preResult
             runner.result

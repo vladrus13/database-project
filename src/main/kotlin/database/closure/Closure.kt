@@ -59,19 +59,19 @@ class Closure {
         fun Relation.getClosureAttributes(): Result<Attributes> {
             val current = this.attributes.attributes.toMutableSet()
             val result = Result.PreResult()
-            result.info.appendLine(current.getStringOfCollection())
+            result.infoAppendLine(current.getStringOfCollection())
             var isNewGet = true
             while (isNewGet) {
                 isNewGet = false
                 for (functional in this.functionals) {
                     if (current.containsAll(functional.from) && functional.to.any { !current.contains(it) }) {
-                        result.fullInfo.appendLine("Использовано правило:")
+                        result.fullInfoAppendLine("Использовано правило:")
                             .append(functional.from.joinToString(separator = ", ", prefix = "[", postfix = "]"))
                             .append(" -> ")
                             .append(functional.to.joinToString(separator = ", ", prefix = "[", postfix = "]"))
                             .appendLine()
                         current.addAll(functional.to)
-                        result.info.appendLine(current.getStringOfCollection())
+                        result.infoAppendLine(current.getStringOfCollection())
                         isNewGet = true
                         break
                     }

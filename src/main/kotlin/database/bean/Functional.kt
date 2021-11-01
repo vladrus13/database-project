@@ -1,6 +1,9 @@
 package database.bean
 
-class Functional(val from: Set<String>, val to: Set<String>) {
+import database.closure.Closure.Companion.getClosureAttributes
+import database.utils.StringUtils.Companion.getString
+
+class Functional(var from: Set<String>, val to: Set<String>) {
     companion object {
         fun read(functional: String): Functional {
             val splitted = functional.split("->").map { it.trim() }
@@ -34,5 +37,21 @@ class Functional(val from: Set<String>, val to: Set<String>) {
     fun checkContains(attributes: Attributes) {
         check(attributes.attributes.containsAll(from)) { "Attributes doesn't contain all from functional" }
         check(attributes.attributes.containsAll(to)) { "Attributes doesn't contain all to functional" }
+    }
+
+    fun removeUseless(old: MutableList<Functional>): Result<Functional?> {
+        val preResult = Result.PreResult()
+        for (trying in from) {
+            val newFrom = from.toMutableSet().apply { remove(trying) }
+            val newFunctional = Functional(newFrom, to)
+            val newFunctionals = Functionals(old.toSet())
+            val closureTask = Relation("", Attributes(newFrom), newFunctionals).getClosureAttributes().result.attributes
+            if (closureTask.containsAll(to)) {
+                preResult.fullInfoAppendLine("Найдено новое бесполезное ${trying}: ${this.getString()}")
+                from = from.minus(trying)
+                return Result(preResult, newFunctional)
+            }
+        }
+        return Result(preResult, null)
     }
 }

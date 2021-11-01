@@ -1,3 +1,302 @@
 
 
+Take relation: inventory
+{[inventory_real_item_id],
+[inventory_item_id]}
+Take relation: map
+{[map_id]}
+Take relation: hero
+{[world_id, map_id, hero_coordinates],
+[hero_id]}
+Take relation: unit
+{[unit_id]}
+Take relation: enemy
+{[enemy_coordinates, map_id],
+[enemy_id]}
+Take relation: account
+{[account_login],
+[account_id]}
+Take relation: item
+{[item_id]}
+Take relation: friendship
+{[account_id]}
+Take relation: world
+{[world_id]}
+
+Take relation: inventory
+Before ISFD
+[inventory_item_id] -> [inventory_real_item_id, inventory_item_count],
+[inventory_real_item_id] -> [inventory_item_id]
+Split: [inventory_item_id] -> [inventory_real_item_id, inventory_item_count] to [inventory_item_id] -> [inventory_real_item_id]
+[inventory_item_id] -> [inventory_item_count]
+After 1 step - splitting
+[inventory_item_id] -> [inventory_real_item_id]
+[inventory_item_id] -> [inventory_item_count]
+[inventory_real_item_id] -> [inventory_item_id]
+Take relation: map
+Before ISFD
+[map_id] -> [map_name, map_description, map_map, world_id]
+Split: [map_id] -> [map_name, map_description, map_map, world_id] to [map_id] -> [map_name]
+[map_id] -> [map_description]
+[map_id] -> [map_map]
+[map_id] -> [world_id]
+After 1 step - splitting
+[map_id] -> [map_name]
+[map_id] -> [map_description]
+[map_id] -> [map_map]
+[map_id] -> [world_id]
+Take relation: hero
+Before ISFD
+[hero_id] -> [account_id, world_id, hero_world_progress, map_id, unit_id, hero_current_state, hero_coordinates],
+[world_id, map_id, hero_coordinates] -> [hero_id]
+Split: [hero_id] -> [account_id, world_id, hero_world_progress, map_id, unit_id, hero_current_state, hero_coordinates] to [hero_id] -> [account_id]
+[hero_id] -> [world_id]
+[hero_id] -> [hero_world_progress]
+[hero_id] -> [map_id]
+[hero_id] -> [unit_id]
+[hero_id] -> [hero_current_state]
+[hero_id] -> [hero_coordinates]
+After 1 step - splitting
+[hero_id] -> [account_id]
+[hero_id] -> [world_id]
+[hero_id] -> [hero_world_progress]
+[hero_id] -> [map_id]
+[hero_id] -> [unit_id]
+[hero_id] -> [hero_current_state]
+[hero_id] -> [hero_coordinates]
+[world_id, map_id, hero_coordinates] -> [hero_id]
+Take relation: unit
+Before ISFD
+[unit_id] -> [unit_type, unit_base_statistic]
+Split: [unit_id] -> [unit_type, unit_base_statistic] to [unit_id] -> [unit_type]
+[unit_id] -> [unit_base_statistic]
+After 1 step - splitting
+[unit_id] -> [unit_type]
+[unit_id] -> [unit_base_statistic]
+Take relation: enemy
+Before ISFD
+[enemy_id] -> [enemy_type, unit_id, enemy_current_state, enemy_coordinates, map_id],
+[map_id, enemy_coordinates] -> [enemy_id]
+Split: [enemy_id] -> [enemy_type, unit_id, enemy_current_state, enemy_coordinates, map_id] to [enemy_id] -> [enemy_type]
+[enemy_id] -> [unit_id]
+[enemy_id] -> [enemy_current_state]
+[enemy_id] -> [enemy_coordinates]
+[enemy_id] -> [map_id]
+After 1 step - splitting
+[enemy_id] -> [enemy_type]
+[enemy_id] -> [unit_id]
+[enemy_id] -> [enemy_current_state]
+[enemy_id] -> [enemy_coordinates]
+[enemy_id] -> [map_id]
+[map_id, enemy_coordinates] -> [enemy_id]
+Take relation: account
+Before ISFD
+[account_id] -> [account_name, account_login, account_password],
+[account_login] -> [account_id]
+Split: [account_id] -> [account_name, account_login, account_password] to [account_id] -> [account_name]
+[account_id] -> [account_login]
+[account_id] -> [account_password]
+After 1 step - splitting
+[account_id] -> [account_name]
+[account_id] -> [account_login]
+[account_id] -> [account_password]
+[account_login] -> [account_id]
+Take relation: item
+Before ISFD
+[item_id] -> [item_function]
+After 1 step - splitting
+[item_id] -> [item_function]
+Take relation: friendship
+Before ISFD
+
+After 1 step - splitting
+
+Take relation: world
+Before ISFD
+[world_id] -> [world_name, account_id]
+Split: [world_id] -> [world_name, account_id] to [world_id] -> [world_name]
+[world_id] -> [account_id]
+After 1 step - splitting
+[world_id] -> [world_name]
+[world_id] -> [account_id]
+
+Take relation: inventory
+Before ISFD
+[inventory_item_id] -> [inventory_real_item_id],
+[inventory_item_id] -> [inventory_item_count],
+[inventory_real_item_id] -> [inventory_item_id]
+After 2 step - useless attributes
+[inventory_item_id] -> [inventory_real_item_id]
+[inventory_item_id] -> [inventory_item_count]
+[inventory_real_item_id] -> [inventory_item_id]
+Take relation: map
+Before ISFD
+[map_id] -> [map_name],
+[map_id] -> [map_description],
+[map_id] -> [map_map],
+[map_id] -> [world_id]
+After 2 step - useless attributes
+[map_id] -> [map_name]
+[map_id] -> [map_description]
+[map_id] -> [map_map]
+[map_id] -> [world_id]
+Take relation: hero
+Before ISFD
+[hero_id] -> [account_id],
+[hero_id] -> [world_id],
+[hero_id] -> [hero_world_progress],
+[hero_id] -> [map_id],
+[hero_id] -> [unit_id],
+[hero_id] -> [hero_current_state],
+[hero_id] -> [hero_coordinates],
+[world_id, map_id, hero_coordinates] -> [hero_id]
+After 2 step - useless attributes
+[hero_id] -> [account_id]
+[hero_id] -> [world_id]
+[hero_id] -> [hero_world_progress]
+[hero_id] -> [map_id]
+[hero_id] -> [unit_id]
+[hero_id] -> [hero_current_state]
+[hero_id] -> [hero_coordinates]
+[world_id, map_id, hero_coordinates] -> [hero_id]
+Take relation: unit
+Before ISFD
+[unit_id] -> [unit_type],
+[unit_id] -> [unit_base_statistic]
+After 2 step - useless attributes
+[unit_id] -> [unit_type]
+[unit_id] -> [unit_base_statistic]
+Take relation: enemy
+Before ISFD
+[enemy_id] -> [enemy_type],
+[enemy_id] -> [unit_id],
+[enemy_id] -> [enemy_current_state],
+[enemy_id] -> [enemy_coordinates],
+[enemy_id] -> [map_id],
+[map_id, enemy_coordinates] -> [enemy_id]
+After 2 step - useless attributes
+[enemy_id] -> [enemy_type]
+[enemy_id] -> [unit_id]
+[enemy_id] -> [enemy_current_state]
+[enemy_id] -> [enemy_coordinates]
+[enemy_id] -> [map_id]
+[map_id, enemy_coordinates] -> [enemy_id]
+Take relation: account
+Before ISFD
+[account_id] -> [account_name],
+[account_id] -> [account_login],
+[account_id] -> [account_password],
+[account_login] -> [account_id]
+After 2 step - useless attributes
+[account_id] -> [account_name]
+[account_id] -> [account_login]
+[account_id] -> [account_password]
+[account_login] -> [account_id]
+Take relation: item
+Before ISFD
+[item_id] -> [item_function]
+After 2 step - useless attributes
+[item_id] -> [item_function]
+Take relation: friendship
+Before ISFD
+
+After 2 step - useless attributes
+
+Take relation: world
+Before ISFD
+[world_id] -> [world_name],
+[world_id] -> [account_id]
+After 2 step - useless attributes
+[world_id] -> [world_name]
+[world_id] -> [account_id]
+
+Take relation: inventory
+Before ISFD
+[inventory_item_id] -> [inventory_real_item_id],
+[inventory_item_id] -> [inventory_item_count],
+[inventory_real_item_id] -> [inventory_item_id]
+After 3 step - useless functionals
+[inventory_item_id] -> [inventory_real_item_id]
+[inventory_item_id] -> [inventory_item_count]
+[inventory_real_item_id] -> [inventory_item_id]
+Take relation: map
+Before ISFD
+[map_id] -> [map_name],
+[map_id] -> [map_description],
+[map_id] -> [map_map],
+[map_id] -> [world_id]
+After 3 step - useless functionals
+[map_id] -> [map_name]
+[map_id] -> [map_description]
+[map_id] -> [map_map]
+[map_id] -> [world_id]
+Take relation: hero
+Before ISFD
+[hero_id] -> [account_id],
+[hero_id] -> [world_id],
+[hero_id] -> [hero_world_progress],
+[hero_id] -> [map_id],
+[hero_id] -> [unit_id],
+[hero_id] -> [hero_current_state],
+[hero_id] -> [hero_coordinates],
+[world_id, map_id, hero_coordinates] -> [hero_id]
+After 3 step - useless functionals
+[hero_id] -> [account_id]
+[hero_id] -> [world_id]
+[hero_id] -> [hero_world_progress]
+[hero_id] -> [map_id]
+[hero_id] -> [unit_id]
+[hero_id] -> [hero_current_state]
+[hero_id] -> [hero_coordinates]
+[world_id, map_id, hero_coordinates] -> [hero_id]
+Take relation: unit
+Before ISFD
+[unit_id] -> [unit_type],
+[unit_id] -> [unit_base_statistic]
+After 3 step - useless functionals
+[unit_id] -> [unit_type]
+[unit_id] -> [unit_base_statistic]
+Take relation: enemy
+Before ISFD
+[enemy_id] -> [enemy_type],
+[enemy_id] -> [unit_id],
+[enemy_id] -> [enemy_current_state],
+[enemy_id] -> [enemy_coordinates],
+[enemy_id] -> [map_id],
+[map_id, enemy_coordinates] -> [enemy_id]
+After 3 step - useless functionals
+[enemy_id] -> [enemy_type]
+[enemy_id] -> [unit_id]
+[enemy_id] -> [enemy_current_state]
+[enemy_id] -> [enemy_coordinates]
+[enemy_id] -> [map_id]
+[map_id, enemy_coordinates] -> [enemy_id]
+Take relation: account
+Before ISFD
+[account_id] -> [account_name],
+[account_id] -> [account_login],
+[account_id] -> [account_password],
+[account_login] -> [account_id]
+After 3 step - useless functionals
+[account_id] -> [account_name]
+[account_id] -> [account_login]
+[account_id] -> [account_password]
+[account_login] -> [account_id]
+Take relation: item
+Before ISFD
+[item_id] -> [item_function]
+After 3 step - useless functionals
+[item_id] -> [item_function]
+Take relation: friendship
+Before ISFD
+
+After 3 step - useless functionals
+
+Take relation: world
+Before ISFD
+[world_id] -> [world_name],
+[world_id] -> [account_id]
+After 3 step - useless functionals
+[world_id] -> [world_name]
+[world_id] -> [account_id]
 

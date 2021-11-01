@@ -8,10 +8,36 @@ class Result<T>(val preResult: PreResult, val result: T) {
 
     val fullInfo = preResult.fullInfo
 
-    class PreResult {
-        val shortInfo = StringBuilder()
-        val info = StringBuilder()
-        val fullInfo = StringBuilder()
+    open class PreResult {
+        internal val shortInfo = StringBuilder()
+        internal val info = StringBuilder()
+        internal val fullInfo = StringBuilder()
+
+        fun fullInfoAppend(s: String): StringBuilder = fullInfo.append(s)
+
+        fun infoAppend(s: String): java.lang.StringBuilder? {
+            fullInfo.append(s)
+            return info.append(s)
+        }
+
+        fun shortInfoAppend(s: String): java.lang.StringBuilder? {
+            fullInfo.append(s)
+            info.append(s)
+            return shortInfo.append(s)
+        }
+
+        fun fullInfoAppendLine(s: String) = fullInfo.appendLine(s)
+
+        fun infoAppendLine(s: String): StringBuilder {
+            fullInfo.appendLine(s)
+            return info.appendLine(s)
+        }
+
+        fun shortInfoAppendLine(s: String): StringBuilder {
+            fullInfo.appendLine(s)
+            info.appendLine(s)
+            return shortInfo.appendLine(s)
+        }
 
         operator fun plusAssign(another: PreResult) {
             shortInfo.append(another.shortInfo)

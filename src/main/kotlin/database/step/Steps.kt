@@ -9,7 +9,10 @@ class Steps {
         private val list = listOf<Step<*>>(
             ReadStep(),
             CheckAttributesStep(),
-            GetKeysStep()
+            GetKeysStep(),
+            IrreducibleSetSplittingStep(),
+            IrreducibleSetUselessAttributesStep(),
+            IrreducibleSetUselessFunctionalsStep()
         )
 
         private fun fillString(char: Char, full: Int, from: String): String {
@@ -17,7 +20,7 @@ class Steps {
         }
 
         private fun getPercent(part: Double, s: String): String {
-            return "[${"=".repeat((50 * part).toInt())}${"-".repeat((50 * (1 - part)).toInt())} ${
+            return "[${"=".repeat((50 * part).toInt())}${"-".repeat(50 - (50 * part).toInt())} ${
                 fillString(
                     ' ',
                     3,

@@ -23,12 +23,12 @@ class Keys {
             notSeenAttributes.forEach {
                 if (!cantBan.contains(it)) {
                     val trying = notSeenAttributes.minus(it)
-                    result.fullInfo.appendLine("Попытка убрать ключ: $it")
+                    result.fullInfoAppendLine("Попытка убрать ключ: $it")
                     if (!used.contains(trying)) {
                         val closure = (Relation("", Attributes(trying), functionals)).getClosureAttributes().result
-                        result.fullInfo.appendLine("Получено замыкание: ${closure.getStringOfAttributes(separator = ", ")}")
+                        result.fullInfoAppendLine("Получено замыкание: ${closure.getStringOfAttributes(separator = ", ")}")
                         if (closure.attributes.containsAll(attributes) && attributes.containsAll(closure.attributes)) {
-                            result.fullInfo.appendLine(
+                            result.fullInfoAppendLine(
                                 "Оно полное! Убираем ключ $it. Подключ: ${
                                     trying.joinToString(
                                         separator = ", "
@@ -40,7 +40,7 @@ class Keys {
                             returned.addAll(newResult.result)
                             flag = true
                         } else {
-                            result.fullInfo.appendLine("Оно не полное. Мы не будем убирать этот ключ")
+                            result.fullInfoAppendLine("Оно не полное. Мы не будем убирать этот ключ")
                             newCantBreak.add(it)
                         }
                         used[trying] = flag
@@ -51,7 +51,7 @@ class Keys {
             }
             if (!flag) {
                 returned.add(notSeenAttributes.toList())
-                result.fullInfo.appendLine("У нас есть ключ ${notSeenAttributes.joinToString(separator = ", ")}")
+                result.fullInfoAppendLine("У нас есть ключ ${notSeenAttributes.joinToString(separator = ", ")}")
             }
             return Result(result, returned)
         }

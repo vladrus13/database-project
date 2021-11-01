@@ -1,6 +1,8 @@
 package database.utils
 
 import database.bean.Attributes
+import database.bean.Functional
+import database.bean.Functionals
 
 class StringUtils {
     companion object {
@@ -27,6 +29,20 @@ class StringUtils {
             postfix: String = "}"
         ): String {
             return this.attributes.getStringOfCollection(separator, prefix, postfix)
+        }
+
+        fun Functional.getString(): String {
+            return this.from.getStringOfCollection(prefix = "[", postfix = "]") +
+                    " -> " +
+                    this.to.getStringOfCollection(prefix = "[", postfix = "]")
+        }
+
+        fun Functionals.getString(): String {
+            return this.set.getStringOfCollection(
+                separator = ",\n",
+                prefix = "",
+                postfix = "",
+                transform = { it.getString() })
         }
     }
 }

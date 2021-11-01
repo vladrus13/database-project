@@ -11,11 +11,10 @@ class GetKeysStep : RelationRunStep() {
     override fun run(input: Relation): Result<Relation> {
         val keys = input.getKeys()
         val preResult = Result.PreResult()
-        preResult.shortInfo.appendLine("Keys get from relation ${input.name}")
         preResult += keys.preResult
-        preResult.shortInfo.appendLine(
+        preResult.shortInfoAppendLine(
             keys.result.getStringOfCollection(
-                separator = "\n,",
+                separator = ",\n",
                 transform = { it.getStringOfCollection(prefix = "[", postfix = "]") })
         )
         return Result(preResult, input)
