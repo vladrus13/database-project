@@ -8,7 +8,8 @@ class Steps {
     companion object {
         private val list = listOf<Step<*>>(
             ReadStep(),
-            CheckAttributesStep()
+            CheckAttributesStep(),
+            GetKeysStep()
         )
 
         private fun fillString(char: Char, full: Int, from: String): String {
@@ -52,6 +53,9 @@ class Steps {
                 preMove = newPreMove!!
                 previousClass = newPreviousClass
             }
+            shortInfo.close()
+            info.close()
+            fullInfo.close()
         }
     }
 }

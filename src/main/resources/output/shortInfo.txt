@@ -1,0 +1,16 @@
+
+
+{[inventory_real_item_id]
+,[inventory_item_id]}
+{[map_id]}
+{[world_id, map_id, hero_coordinates]
+,[hero_id]}
+{[unit_id]}
+{[enemy_coordinates, map_id]
+,[enemy_id]}
+{[account_login]
+,[account_id]}
+{[item_id]}
+{[account_id]}
+{[world_id]}
+

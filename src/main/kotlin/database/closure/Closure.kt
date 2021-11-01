@@ -1,6 +1,7 @@
 package database.closure
 
 import database.bean.*
+import database.utils.StringUtils.Companion.getStringOfCollection
 
 class Closure {
     companion object {
@@ -26,9 +27,9 @@ class Closure {
             }
         }
 
-        fun getClosure(relation: Relation): Result<Relation> {
-            val attributes = relation.attributes
-            val functionals = relation.functionals
+        fun Relation.getClosureFunctional(): Result<Relation> {
+            val attributes = this.attributes
+            val functionals = this.functionals
             val current = functionals.set.toMutableSet()
             getTrivial(attributes.attributes.toMutableList(), mutableSetOf(), mutableSetOf(), current)
             var isNew = true
@@ -51,8 +52,32 @@ class Closure {
             }
             return Result(
                 Result.PreResult(),
-                Relation(relation.name, Attributes(attributes.attributes.toSet()), Functionals(current))
+                Relation(this.name, Attributes(attributes.attributes.toSet()), Functionals(current))
             )
+        }
+
+        fun Relation.getClosureAttributes(): Result<Attributes> {
+            val current = this.attributes.attributes.toMutableSet()
+            val result = Result.PreResult()
+            result.info.appendLine(current.getStringOfCollection())
+            var isNewGet = true
+            while (isNewGet) {
+                isNewGet = false
+                for (functional in this.functionals) {
+                    if (current.containsAll(functional.from) && functional.to.any { !current.contains(it) }) {
+                        result.fullInfo.appendLine("Использовано правило:")
+                            .append(functional.from.joinToString(separator = ", ", prefix = "[", postfix = "]"))
+                            .append(" -> ")
+                            .append(functional.to.joinToString(separator = ", ", prefix = "[", postfix = "]"))
+                            .appendLine()
+                        current.addAll(functional.to)
+                        result.info.appendLine(current.getStringOfCollection())
+                        isNewGet = true
+                        break
+                    }
+                }
+            }
+            return Result(result, Attributes(current))
         }
     }
 }
