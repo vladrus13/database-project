@@ -1,8 +1,8 @@
 package database.bean
 
-class Functional(val from : Set<String>, val to : Set<String>) {
+class Functional(val from: Set<String>, val to: Set<String>) {
     companion object {
-        fun read(functional: String) : Functional {
+        fun read(functional: String): Functional {
             val splitted = functional.split("->").map { it.trim() }
             check(splitted.size == 2) { "Can't read from functional! Wrong count of -\">\"" }
             val from = splitted[0].split(",").map { it.trim() }
@@ -27,12 +27,12 @@ class Functional(val from : Set<String>, val to : Set<String>) {
         return result
     }
 
-    fun asString(separator : String = " -> ", prefix : String = "", postfix : String = "") : String {
+    fun asString(separator: String = " -> ", prefix: String = "", postfix: String = ""): String {
         return prefix + from.joinToString() + separator + to.joinToString() + postfix
     }
 
     fun checkContains(attributes: Attributes) {
-        check(attributes.attributes.containsAll(from)) {"Attributes doesn't contain all from functional"}
-        check(attributes.attributes.containsAll(to)) {"Attributes doesn't contain all to functional"}
+        check(attributes.attributes.containsAll(from)) { "Attributes doesn't contain all from functional" }
+        check(attributes.attributes.containsAll(to)) { "Attributes doesn't contain all to functional" }
     }
 }

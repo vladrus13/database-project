@@ -6,9 +6,9 @@ import kotlin.reflect.KClass
 interface Step<OUTPUT> {
     val name: String
 
-    fun run(input : Any) : Result<OUTPUT>
+    fun run(input: Any): Result<OUTPUT>
 
-    fun getInputClass() : KClass<*>
+    fun getInputClass(): KClass<*>
 
-    fun getOutputClass() : KClass<*>
+    fun getOutputClass(): KClass<*>
 }

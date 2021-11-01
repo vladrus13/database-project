@@ -2,13 +2,13 @@ package database.bean
 
 import org.json.JSONArray
 
-class Attributes(val attributes : Set<String>) {
+class Attributes(val attributes: Set<String>) {
     companion object {
-        fun read(attributes : String, separator : String = "\n") : Attributes {
+        fun read(attributes: String, separator: String = "\n"): Attributes {
             return Attributes(attributes.split(separator).map { it.trim() }.toSet())
         }
 
-        fun read(json : JSONArray) : Attributes {
+        fun read(json: JSONArray): Attributes {
             return Attributes(json.map { it.toString().trim() }.toSet())
         }
     }
@@ -25,11 +25,11 @@ class Attributes(val attributes : Set<String>) {
         return attributes.hashCode()
     }
 
-    fun asString(separator: String = ", ", prefix : String = "(", postfix : String = ")"): String {
+    fun asString(separator: String = ", ", prefix: String = "(", postfix: String = ")"): String {
         return attributes.joinToString(separator = separator, prefix = prefix, postfix = postfix)
     }
 
-    operator fun iterator() : Iterator<String> {
+    operator fun iterator(): Iterator<String> {
         return attributes.iterator()
     }
 }
