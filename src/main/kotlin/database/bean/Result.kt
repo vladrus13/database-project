@@ -1,32 +1,23 @@
 package database.bean
 
-class Result<T>(private val preResult : PreResult, val result : T) {
+class Result<T>(preResult : PreResult, val result : T) {
 
-    val shortInfo
-        get() = preResult.shortInfo
+    val shortInfo = preResult.shortInfo
 
-    val info
-        get() = preResult.info
+    val info = preResult.info
 
-    val fullInfo
-        get() = preResult.fullInfo
+    val fullInfo = preResult.fullInfo
 
     class PreResult {
         val shortInfo = StringBuilder()
         val info = StringBuilder()
         val fullInfo = StringBuilder()
 
-        fun shortInfo(s : String) {
-            shortInfo.appendLine(s)
-        }
+        fun shortInfo(s : String) = shortInfo.appendLine(s)
 
-        fun info(s : String) {
-            info.appendLine(s)
-        }
+        fun info(s : String) = info.appendLine(s)
 
-        fun fullInfo(s : String) {
-            fullInfo.appendLine(s)
-        }
+        fun fullInfo(s : String) = fullInfo.appendLine(s)
 
         operator fun plusAssign(another : PreResult) {
             shortInfo.appendLine(another.shortInfo)

@@ -1,2 +1,2 @@
-account_id -> name, login, password
-login -> account_id
+account_id -> account_name, account_login, account_password
+account_login -> account_id

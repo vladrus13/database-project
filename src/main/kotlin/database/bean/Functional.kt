@@ -30,4 +30,9 @@ class Functional(val from : Set<String>, val to : Set<String>) {
     fun asString(separator : String = " -> ", prefix : String = "", postfix : String = "") : String {
         return prefix + from.joinToString() + separator + to.joinToString() + postfix
     }
+
+    fun checkContains(attributes: Attributes) {
+        check(attributes.attributes.containsAll(from)) {"Attributes doesn't contain all from functional"}
+        check(attributes.attributes.containsAll(to)) {"Attributes doesn't contain all to functional"}
+    }
 }

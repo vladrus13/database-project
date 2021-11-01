@@ -4,12 +4,22 @@ import java.nio.file.Path
 
 class Relations(val relations: Set<Relation>) {
     companion object {
-        fun read(path : Path) : Relations {
+        fun read(path: Path): Relations {
             return Relations(
-                path.toFile().listFiles()!!.map {
-                    Relation.read(it.toPath())
-                }.toSet()
+                path.toFile()
+                    .listFiles { _, name -> (name.endsWith(".attributes") or name.endsWith(".relations")) }!!
+                    .map { it.nameWithoutExtension }
+                    .toSet()
+                    .map {
+                        Relation.read(path, it)
+                    }.toSet()
             )
+        }
+    }
+
+    fun checkContains() {
+        relations.forEach {
+            it.checkContain()
         }
     }
 }
