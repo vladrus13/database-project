@@ -17,7 +17,7 @@ abstract class RelationRunStep : Step<Relations> {
             val runner = run(it)
             preResult += runner.preResult
             runner.result
-        }.toSet(), relationsInput.main))
+        }.toMutableSet(), relationsInput.main))
     }
 
     override fun getInputClass(): KClass<*> = Relations::class

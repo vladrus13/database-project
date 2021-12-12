@@ -1,5 +1,6 @@
 package database.step
 
+import database.bean.Result
 import java.io.BufferedWriter
 import java.nio.file.Path
 import kotlin.reflect.KClass
@@ -43,13 +44,16 @@ class Steps {
                             "actual: ${previousClass.javaObjectType}"
                 }
                 val newMove = previousClass.javaObjectType.cast(preMove)
+                val preResult = Result.PreResult()
+                preResult.shortInfoAppendLine("------------------------ Step: ${step.name} ------------------------")
                 val newPreviousClass = step.getOutputClass()
                 val newPreMoveResult = step.run(newMove)
-                shortInfo.write(newPreMoveResult.shortInfo.toString())
+                preResult += newPreMoveResult.preResult
+                shortInfo.write(preResult.shortInfo.toString())
                 shortInfo.newLine()
-                info.write(newPreMoveResult.info.toString())
+                info.write(preResult.info.toString())
                 info.newLine()
-                fullInfo.write(newPreMoveResult.fullInfo.toString())
+                fullInfo.write(preResult.fullInfo.toString())
                 fullInfo.newLine()
                 println(getPercent(onePart * (stepIndex + 1), step.name))
                 val newPreMove = newPreMoveResult.result

@@ -1,15 +1,12 @@
 package database.bean
 
-import org.json.JSONArray
+import com.google.gson.annotations.SerializedName
 
-class Attributes(val attributes: Set<String>) {
+data class Attributes(@SerializedName("attributes") val attributes: Set<String>) {
+
     companion object {
         fun read(attributes: String, separator: String = "\n"): Attributes {
             return Attributes(attributes.split(separator).map { it.trim() }.toSet())
-        }
-
-        fun read(json: JSONArray): Attributes {
-            return Attributes(json.map { it.toString().trim() }.toSet())
         }
     }
 

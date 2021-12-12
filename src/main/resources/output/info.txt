@@ -1,5 +1,8 @@
+------------------------ Step: Read ------------------------
 
+------------------------ Step: Check functionals ------------------------
 
+------------------------ Step: Get keys ------------------------
 Take relation: inventory
 {[inventory_real_item_id],
 [inventory_item_id]}
@@ -23,6 +26,7 @@ Take relation: friendship
 Take relation: world
 {[world_id]}
 
+------------------------ Step: Irreducible set functional dependencies - splitting ------------------------
 Take relation: inventory
 Before ISFD
 [inventory_item_id] -> [inventory_real_item_id, inventory_item_count],
@@ -120,6 +124,7 @@ After 1 step - splitting
 [world_id] -> [world_name]
 [world_id] -> [account_id]
 
+------------------------ Step: Irreducible set functional dependencies - useless attributes ------------------------
 Take relation: inventory
 Before ISFD
 [inventory_item_id] -> [inventory_real_item_id],
@@ -210,6 +215,7 @@ After 2 step - useless attributes
 [world_id] -> [world_name]
 [world_id] -> [account_id]
 
+------------------------ Step: Irreducible set functional dependencies - useless functionals ------------------------
 Take relation: inventory
 Before ISFD
 [inventory_item_id] -> [inventory_real_item_id],

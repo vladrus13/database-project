@@ -1,9 +1,10 @@
 package database.bean
 
+import com.google.gson.annotations.SerializedName
 import database.closure.Closure.Companion.getClosureAttributes
 import database.utils.StringUtils.Companion.getString
 
-class Functional(var from: Set<String>, val to: Set<String>) {
+data class Functional(@SerializedName("from") var from: Set<String>, @SerializedName("to") val to: Set<String>) {
     companion object {
         fun read(functional: String): Functional {
             val splitted = functional.split("->").map { it.trim() }

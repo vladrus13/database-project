@@ -1,8 +1,9 @@
 package database.bean
 
+import com.google.gson.annotations.SerializedName
 import database.closure.Closure.Companion.getClosureAttributes
 
-data class Functionals(val set: Set<Functional>) {
+data class Functionals(@SerializedName("functionals") val set: Set<Functional>) {
     companion object {
         fun read(s: String): Functionals {
             return Functionals(s.split("\n").filter { it.isNotBlank() }.map {

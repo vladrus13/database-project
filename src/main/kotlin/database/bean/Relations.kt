@@ -1,8 +1,12 @@
 package database.bean
 
+import com.google.gson.annotations.SerializedName
 import java.nio.file.Path
 
-class Relations(val relations: Set<Relation>, val main: Relation) {
+data class Relations(
+    @SerializedName("relations") val relations: MutableSet<Relation>,
+    @SerializedName("main") val main: Relation?
+) {
     companion object {
         fun read(path: Path): Relations {
             return Relations(
@@ -13,7 +17,7 @@ class Relations(val relations: Set<Relation>, val main: Relation) {
                     .toSet()
                     .map {
                         Relation.read(path, it)
-                    }.toSet(),
+                    }.toMutableSet(),
                 Relation.read(path, "main")
             )
         }
