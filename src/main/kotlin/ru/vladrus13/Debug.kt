@@ -1,4 +1,4 @@
-package database
+package ru.vladrus13
 
 import guru.nidi.graphviz.attribute.GraphAttr.SplineMode
 import guru.nidi.graphviz.attribute.GraphAttr.splines

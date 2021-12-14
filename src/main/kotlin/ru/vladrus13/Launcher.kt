@@ -1,4 +1,4 @@
-package database
+package ru.vladrus13
 
 import ru.vladrus13.tornado.ProjectApp
 import tornadofx.launch
