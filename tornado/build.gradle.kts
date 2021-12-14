@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.31"
+    kotlin("jvm")
     application
-    id("org.openjfx.javafxplugin") version "0.0.8"
+    id("org.openjfx.javafxplugin")
 }
 
 group = "ru.vladrus13"
@@ -20,11 +20,9 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("guru.nidi:graphviz-kotlin:0.18.1")
-    implementation("com.eclipsesource.j2v8:j2v8_linux_x86_64:4.8.0")
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("no.tornado:tornadofx:1.7.20")
-    implementation(project("model"))
-    implementation(project("tornado"))
+    implementation(project(":model"))
 }
 
 tasks.withType<KotlinCompile>() {
