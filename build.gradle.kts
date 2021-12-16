@@ -26,6 +26,7 @@ dependencies {
     implementation(project("model"))
     implementation(project("tornado"))
     implementation(project("html"))
+    implementation(project("pictures"))
 }
 
 tasks.withType<KotlinCompile> {

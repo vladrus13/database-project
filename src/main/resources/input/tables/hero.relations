@@ -1,1 +1,1 @@
-hero_id -> account_id, world_id, unit_id
+hero_id -> account_id, unit_id, hero_world_progress -> Конечно же, мы должны уметь получать по id героя его запись

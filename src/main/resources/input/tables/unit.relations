@@ -1,1 +1,1 @@
-unit_id -> unit_type, unit_base_statistic
+unit_id -> unit_type, unit_base_statistic -> Конечно же, мы должны уметь получать по id юнита его запись

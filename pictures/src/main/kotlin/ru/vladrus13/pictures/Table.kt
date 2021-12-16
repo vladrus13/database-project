@@ -1,15 +1,17 @@
-package ru.vladrus13.tornado.entity
+package ru.vladrus13.pictures
 
-import ru.vladrus13.tornado.utils.Font
+import ru.vladrus13.pictures.utils.Font
 import java.awt.Color
 import java.awt.image.BufferedImage
 import kotlin.math.max
 
-enum class TextStyle {
-    NORMAL, BOLD,
-}
+val listColors = listOf(
+    Color(255, 230, 230),
+    Color(230, 255, 230),
+    Color(230, 230, 255)
+)
 
-fun table(list: List<List<Pair<String, java.awt.Font>>>): BufferedImage {
+fun imageTable(list: List<List<Pair<String, java.awt.Font>>>): BufferedImage {
     val n = list.size
     val m = list.stream().mapToInt { it.size }.max().orElseThrow()
     val startsColumn = MutableList(m) {
@@ -23,11 +25,19 @@ fun table(list: List<List<Pair<String, java.awt.Font>>>): BufferedImage {
         startsColumn[i] += startsColumn[i - 1]
     }
     val height = Font.jetbrainsNormal.size
-    val bufferedImage = BufferedImage(startsColumn.last(), height * (n + 1), BufferedImage.TYPE_INT_RGB)
+    val bufferedImage = BufferedImage(startsColumn.last(), height * n + 10, BufferedImage.TYPE_INT_RGB)
     val graphics = bufferedImage.graphics
     graphics.color = Color.WHITE
     graphics.fillRect(0, 0, startsColumn.last(), height * (n + 1))
     graphics.color = Color.BLACK
+    list.forEachIndexed { rowIndex, _ ->
+        if (rowIndex != 0) {
+            graphics.color = listColors[rowIndex % listColors.size]
+            graphics.fillRect(0, height * rowIndex, startsColumn.last(), height)
+            graphics.color = Color.BLACK
+        }
+    }
+    graphics.drawLine(0, height, startsColumn.last(), height)
     list.forEachIndexed { rowIndex, row ->
         row.forEachIndexed { columnIndex, cell ->
             val wid = if (columnIndex == 0) {

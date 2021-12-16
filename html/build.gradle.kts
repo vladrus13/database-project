@@ -22,6 +22,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.3")
     implementation("org.jetbrains.kotlin-wrappers:kotlin-css:1.0.0-pre.280-kotlin-1.6.0")
     implementation(project(":model"))
+    implementation(project(":pictures"))
 }
 
 tasks.withType<KotlinCompile> {

@@ -23,6 +23,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("no.tornado:tornadofx:1.7.20")
     implementation(project(":model"))
+    implementation(project(":pictures"))
 }
 
 tasks.withType<KotlinCompile> {

@@ -23,7 +23,7 @@ map.map_name
 map.map_description
 map.map_map
 hero.hero_id
-inventory.inventory_item_id
+hero.hero_world_progress
 inventory.inventory_item_count
 friendship.friendship_account_from_id
 friendship.friendship_account_to_id

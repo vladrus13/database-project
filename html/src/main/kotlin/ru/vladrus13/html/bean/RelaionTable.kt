@@ -49,4 +49,20 @@ fun FlowContent.relationTable(relation: Relation) {
     }, {
         hugeText(keys.fullInfo.toString().split("\n").toList())
     })
+    spoiler({
+        +"Более красивая картинки - ERM"
+    }, {
+        img(
+            src = "${relation.name}-erm.png",
+            alt = "Тут должна была быть картинка ${relation.name} ERM, но по какой то причине она не прогрузилась"
+        )
+    })
+    spoiler({
+        +"Более красивая картинки - PDM"
+    }, {
+        img(
+            src = "${relation.name}-pdm.png",
+            alt = "Тут должна была быть картинка ${relation.name} PDM, но по какой то причине она не прогрузилась"
+        )
+    })
 }

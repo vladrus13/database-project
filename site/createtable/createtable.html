@@ -38,21 +38,23 @@
         <td class="no-borders">PK0, FK0</td>
     </tr>
     <tr>
-        <td class="no-borders">inventory_item_id</td>
-        <td class="no-borders">id</td>
-        <td class="no-borders">PK0</td>
-    </tr>
-    <tr>
         <td class="no-borders">inventory_item_count</td>
         <td class="no-borders">count</td>
         <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">item_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0, FK1</td>
     </tr>
 </table>
 <details class="spoiler">
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[impl_id, inventory_item_id] -&gt; [inventory_item_count]</div>
+            <div class="line">[impl_id, item_id] -&gt; [inventory_item_count] (У одного юнита может быть только одна
+                запись о предмете одного типа)
+            </div>
         </div>
     </div>
 </details>
@@ -61,20 +63,54 @@
     <div class="indent">
         <div class="huge-text">
             <div class="line">Попытка убрать ключ: impl_id</div>
-            <div class="line">Получено замыкание: {inventory_item_id, inventory_item_count}</div>
+            <div class="line">Получено замыкание: {item_id, inventory_item_count}</div>
             <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
-            <div class="line">Попытка убрать ключ: inventory_item_id</div>
+            <div class="line">Попытка убрать ключ: item_id</div>
             <div class="line">Получено замыкание: {impl_id, inventory_item_count}</div>
             <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
             <div class="line">Попытка убрать ключ: inventory_item_count</div>
-            <div class="line">Получено замыкание: {impl_id, inventory_item_id, inventory_item_count}</div>
-            <div class="line">Оно полное! Убираем ключ inventory_item_count. Подключ: impl_id, inventory_item_id</div>
-            <div class="line">У нас есть ключ impl_id, inventory_item_id</div>
+            <div class="line">Получено замыкание: {impl_id, item_id, inventory_item_count}</div>
+            <div class="line">Оно полное! Убираем ключ inventory_item_count. Подключ: impl_id, item_id</div>
+            <div class="line">У нас есть ключ impl_id, item_id</div>
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img
+            alt="Тут должна была быть картинка inventory ERM, но по какой то причине она не прогрузилась"
+            src="inventory-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img
+            alt="Тут должна была быть картинка inventory PDM, но по какой то причине она не прогрузилась"
+            src="inventory-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>impl</caption>
+    <tr>
+        <td class="no-borders">enemy_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">hero_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK1</td>
+    </tr>
+    <tr>
+        <td class="no-borders">impl_coordinates</td>
+        <td class="no-borders">coordinates</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">impl_current_status</td>
+        <td class="no-borders">real_status</td>
+        <td class="no-borders"></td>
+    </tr>
     <tr>
         <td class="no-borders">impl_id</td>
         <td class="no-borders">id</td>
@@ -83,30 +119,10 @@
     <tr>
         <td class="no-borders">map_id</td>
         <td class="no-borders">id</td>
-        <td class="no-borders">PK0, FK0</td>
-    </tr>
-    <tr>
-        <td class="no-borders">impl_current_status</td>
-        <td class="no-borders">real_status</td>
-        <td class="no-borders"></td>
-    </tr>
-    <tr>
-        <td class="no-borders">impl_coordinates</td>
-        <td class="no-borders">coordinates</td>
-        <td class="no-borders">PK0</td>
-    </tr>
-    <tr>
-        <td class="no-borders">enemy_id</td>
-        <td class="no-borders">id</td>
-        <td class="no-borders">FK1</td>
+        <td class="no-borders">PK0, FK2</td>
     </tr>
     <tr>
         <td class="no-borders">npc_id</td>
-        <td class="no-borders">id</td>
-        <td class="no-borders">FK2</td>
-    </tr>
-    <tr>
-        <td class="no-borders">hero_id</td>
         <td class="no-borders">id</td>
         <td class="no-borders">FK3</td>
     </tr>
@@ -115,11 +131,11 @@
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[impl_id] -&gt; [map_id, impl_current_status, impl_coordinates, enemy_id, npc_id,
-                hero_id]
+            <div class="line">[impl_id] -&gt; [map_id, impl_current_status, impl_coordinates, enemy_id, npc_id, hero_id]
+                (По id записи мы должны получать, что это за запись)
             </div>
-            <div class="line">[map_id, impl_coordinates] -&gt; [impl_id, impl_current_status, enemy_id, npc_id,
-                hero_id]
+            <div class="line">[map_id, impl_coordinates] -&gt; [impl_id, impl_current_status, enemy_id, npc_id, hero_id]
+                (В одном месте может находиться только один объект юнита)
             </div>
         </div>
     </div>
@@ -822,26 +838,38 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка impl ERM, но по какой то причине она не прогрузилась"
+                             src="impl-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка impl PDM, но по какой то причине она не прогрузилась"
+                             src="impl-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>map</caption>
+    <tr>
+        <td class="no-borders">map_description</td>
+        <td class="no-borders">map_description</td>
+        <td class="no-borders"></td>
+    </tr>
     <tr>
         <td class="no-borders">map_id</td>
         <td class="no-borders">id</td>
         <td class="no-borders">PK0</td>
     </tr>
     <tr>
-        <td class="no-borders">map_name</td>
-        <td class="no-borders">name</td>
-        <td class="no-borders"></td>
-    </tr>
-    <tr>
-        <td class="no-borders">map_description</td>
-        <td class="no-borders">map_description</td>
-        <td class="no-borders"></td>
-    </tr>
-    <tr>
         <td class="no-borders">map_map</td>
         <td class="no-borders">map</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">map_name</td>
+        <td class="no-borders">name</td>
         <td class="no-borders"></td>
     </tr>
     <tr>
@@ -854,7 +882,9 @@
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[map_id] -&gt; [map_name, map_description, map_map, world_id]</div>
+            <div class="line">[map_id] -&gt; [map_name, map_description, map_map, world_id] (По id карты мы должны
+                понимать, что это за карта)
+            </div>
         </div>
     </div>
 </details>
@@ -935,34 +965,48 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка map ERM, но по какой то причине она не прогрузилась"
+                             src="map-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка map PDM, но по какой то причине она не прогрузилась"
+                             src="map-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>hero</caption>
-    <tr>
-        <td class="no-borders">hero_id</td>
-        <td class="no-borders">id</td>
-        <td class="no-borders">PK0</td>
-    </tr>
     <tr>
         <td class="no-borders">account_id</td>
         <td class="no-borders">id</td>
         <td class="no-borders">FK0</td>
     </tr>
     <tr>
-        <td class="no-borders">world_id</td>
+        <td class="no-borders">hero_id</td>
         <td class="no-borders">id</td>
-        <td class="no-borders">FK1</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">hero_world_progress</td>
+        <td class="no-borders">progress</td>
+        <td class="no-borders"></td>
     </tr>
     <tr>
         <td class="no-borders">unit_id</td>
         <td class="no-borders">id</td>
-        <td class="no-borders">FK2</td>
+        <td class="no-borders">FK1</td>
     </tr>
 </table>
 <details class="spoiler">
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[hero_id] -&gt; [account_id, world_id, unit_id]</div>
+            <div class="line">[hero_id] -&gt; [account_id, unit_id, hero_world_progress] (Конечно же, мы должны уметь
+                получать по id героя его запись)
+            </div>
         </div>
     </div>
 </details>
@@ -971,40 +1015,57 @@
     <div class="indent">
         <div class="huge-text">
             <div class="line">Попытка убрать ключ: hero_id</div>
-            <div class="line">Получено замыкание: {account_id, world_id, unit_id}</div>
+            <div class="line">Получено замыкание: {account_id, unit_id, hero_world_progress}</div>
             <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
             <div class="line">Попытка убрать ключ: account_id</div>
-            <div class="line">Получено замыкание: {hero_id, world_id, unit_id, account_id}</div>
-            <div class="line">Оно полное! Убираем ключ account_id. Подключ: hero_id, world_id, unit_id</div>
-            <div class="line">Попытка убрать ключ: world_id</div>
-            <div class="line">Получено замыкание: {hero_id, unit_id, account_id, world_id}</div>
-            <div class="line">Оно полное! Убираем ключ world_id. Подключ: hero_id, unit_id</div>
+            <div class="line">Получено замыкание: {hero_id, unit_id, hero_world_progress, account_id}</div>
+            <div class="line">Оно полное! Убираем ключ account_id. Подключ: hero_id, unit_id, hero_world_progress</div>
             <div class="line">Попытка убрать ключ: unit_id</div>
-            <div class="line">Получено замыкание: {hero_id, account_id, world_id, unit_id}</div>
-            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id</div>
+            <div class="line">Получено замыкание: {hero_id, hero_world_progress, account_id, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, hero_world_progress</div>
+            <div class="line">Попытка убрать ключ: hero_world_progress</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, unit_id, hero_world_progress}</div>
+            <div class="line">Оно полное! Убираем ключ hero_world_progress. Подключ: hero_id</div>
             <div class="line">У нас есть ключ hero_id</div>
+            <div class="line">Попытка убрать ключ: hero_world_progress</div>
+            <div class="line">Получено замыкание: {hero_id, unit_id, account_id, hero_world_progress}</div>
+            <div class="line">Оно полное! Убираем ключ hero_world_progress. Подключ: hero_id, unit_id</div>
             <div class="line">Попытка убрать ключ: unit_id</div>
-            <div class="line">Получено замыкание: {hero_id, world_id, account_id, unit_id}</div>
-            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, world_id</div>
-            <div class="line">Попытка убрать ключ: world_id</div>
-            <div class="line">Попытка убрать ключ: world_id</div>
-            <div class="line">Получено замыкание: {hero_id, account_id, unit_id, world_id}</div>
-            <div class="line">Оно полное! Убираем ключ world_id. Подключ: hero_id, account_id, unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, hero_world_progress, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, account_id, hero_world_progress</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: hero_world_progress</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, unit_id, hero_world_progress}</div>
+            <div class="line">Оно полное! Убираем ключ hero_world_progress. Подключ: hero_id, account_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: hero_world_progress</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, unit_id, hero_world_progress}</div>
+            <div class="line">Оно полное! Убираем ключ hero_world_progress. Подключ: hero_id, account_id, unit_id</div>
             <div class="line">Попытка убрать ключ: account_id</div>
             <div class="line">Попытка убрать ключ: unit_id</div>
-            <div class="line">Получено замыкание: {hero_id, account_id, world_id, unit_id}</div>
-            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, account_id</div>
-            <div class="line">Попытка убрать ключ: account_id</div>
-            <div class="line">Попытка убрать ключ: unit_id</div>
-            <div class="line">Получено замыкание: {hero_id, account_id, world_id, unit_id}</div>
-            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, account_id, world_id</div>
-            <div class="line">Попытка убрать ключ: account_id</div>
-            <div class="line">Попытка убрать ключ: world_id</div>
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка hero ERM, но по какой то причине она не прогрузилась"
+                             src="hero-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка hero PDM, но по какой то причине она не прогрузилась"
+                             src="hero-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>unit</caption>
+    <tr>
+        <td class="no-borders">unit_base_statistic</td>
+        <td class="no-borders">base_statistic</td>
+        <td class="no-borders"></td>
+    </tr>
     <tr>
         <td class="no-borders">unit_id</td>
         <td class="no-borders">id</td>
@@ -1015,17 +1076,14 @@
         <td class="no-borders">unit_type</td>
         <td class="no-borders"></td>
     </tr>
-    <tr>
-        <td class="no-borders">unit_base_statistic</td>
-        <td class="no-borders">base_statistic</td>
-        <td class="no-borders"></td>
-    </tr>
 </table>
 <details class="spoiler">
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[unit_id] -&gt; [unit_type, unit_base_statistic]</div>
+            <div class="line">[unit_id] -&gt; [unit_type, unit_base_statistic] (Конечно же, мы должны уметь получать по
+                id юнита его запись)
+            </div>
         </div>
     </div>
 </details>
@@ -1050,12 +1108,29 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка unit ERM, но по какой то причине она не прогрузилась"
+                             src="unit-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка unit PDM, но по какой то причине она не прогрузилась"
+                             src="unit-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>enemy</caption>
     <tr>
         <td class="no-borders">enemy_id</td>
         <td class="no-borders">id</td>
         <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">enemy_strategy</td>
+        <td class="no-borders">strategy</td>
+        <td class="no-borders"></td>
     </tr>
     <tr>
         <td class="no-borders">enemy_type</td>
@@ -1066,11 +1141,6 @@
         <td class="no-borders">unit_id</td>
         <td class="no-borders">id</td>
         <td class="no-borders">FK0</td>
-    </tr>
-    <tr>
-        <td class="no-borders">enemy_strategy</td>
-        <td class="no-borders">strategy</td>
-        <td class="no-borders"></td>
     </tr>
 </table>
 <details class="spoiler">
@@ -1120,6 +1190,18 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка enemy ERM, но по какой то причине она не прогрузилась"
+                             src="enemy-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка enemy PDM, но по какой то причине она не прогрузилась"
+                             src="enemy-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>account</caption>
     <tr>
@@ -1128,14 +1210,14 @@
         <td class="no-borders">PK1</td>
     </tr>
     <tr>
-        <td class="no-borders">account_name</td>
-        <td class="no-borders">name</td>
-        <td class="no-borders"></td>
-    </tr>
-    <tr>
         <td class="no-borders">account_login</td>
         <td class="no-borders">login</td>
         <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">account_name</td>
+        <td class="no-borders">name</td>
+        <td class="no-borders"></td>
     </tr>
     <tr>
         <td class="no-borders">account_password</td>
@@ -1229,24 +1311,36 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка account ERM, но по какой то причине она не прогрузилась"
+                             src="account-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка account PDM, но по какой то причине она не прогрузилась"
+                             src="account-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>item</caption>
-    <tr>
-        <td class="no-borders">item_id</td>
-        <td class="no-borders">id</td>
-        <td class="no-borders">PK0</td>
-    </tr>
     <tr>
         <td class="no-borders">item_function</td>
         <td class="no-borders">function</td>
         <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">item_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
     </tr>
 </table>
 <details class="spoiler">
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[item_id] -&gt; [item_function]</div>
+            <div class="line">[item_id] -&gt; [item_function] (По id предмета нам нужно понимать, что он делает)</div>
         </div>
     </div>
 </details>
@@ -1264,6 +1358,18 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка item ERM, но по какой то причине она не прогрузилась"
+                             src="item-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка item PDM, но по какой то причине она не прогрузилась"
+                             src="item-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>friendship</caption>
     <tr>
@@ -1297,8 +1403,27 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img
+            alt="Тут должна была быть картинка friendship ERM, но по какой то причине она не прогрузилась"
+            src="friendship-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img
+            alt="Тут должна была быть картинка friendship PDM, но по какой то причине она не прогрузилась"
+            src="friendship-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>world</caption>
+    <tr>
+        <td class="no-borders">account_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
     <tr>
         <td class="no-borders">world_id</td>
         <td class="no-borders">id</td>
@@ -1309,17 +1434,14 @@
         <td class="no-borders">name</td>
         <td class="no-borders"></td>
     </tr>
-    <tr>
-        <td class="no-borders">account_id</td>
-        <td class="no-borders">id</td>
-        <td class="no-borders">FK0</td>
-    </tr>
 </table>
 <details class="spoiler">
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[world_id] -&gt; [world_name, account_id]</div>
+            <div class="line">[world_id] -&gt; [world_name, account_id] (Конечно же, мы должны уметь получать по id мира
+                его запись)
+            </div>
         </div>
     </div>
 </details>
@@ -1344,12 +1466,29 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка world ERM, но по какой то причине она не прогрузилась"
+                             src="world-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка world PDM, но по какой то причине она не прогрузилась"
+                             src="world-pdm.png"></div>
+</details>
+<hr>
+<hr>
 <table class="relation-table">
     <caption>npc</caption>
     <tr>
         <td class="no-borders">npc_id</td>
         <td class="no-borders">id</td>
         <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">npc_triggers</td>
+        <td class="no-borders">triggers</td>
+        <td class="no-borders"></td>
     </tr>
     <tr>
         <td class="no-borders">npc_type</td>
@@ -1361,17 +1500,14 @@
         <td class="no-borders">id</td>
         <td class="no-borders">FK0</td>
     </tr>
-    <tr>
-        <td class="no-borders">npc_triggers</td>
-        <td class="no-borders">triggers</td>
-        <td class="no-borders"></td>
-    </tr>
 </table>
 <details class="spoiler">
     <summary>Функциональные зависимости</summary>
     <div class="indent">
         <div class="huge-text">
-            <div class="line">[npc_id] -&gt; [npc_type, unit_id, npc_triggers]</div>
+            <div class="line">[npc_id] -&gt; [npc_type, unit_id, npc_triggers] (Конечно же, мы должны уметь получать по
+                id npc его запись)
+            </div>
         </div>
     </div>
 </details>
@@ -1412,5 +1548,17 @@
             <br></div>
     </div>
 </details>
+<details class="spoiler">
+    <summary>Более красивая картинки - ERM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка npc ERM, но по какой то причине она не прогрузилась"
+                             src="npc-erm.png"></div>
+</details>
+<details class="spoiler">
+    <summary>Более красивая картинки - PDM</summary>
+    <div class="indent"><img alt="Тут должна была быть картинка npc PDM, но по какой то причине она не прогрузилась"
+                             src="npc-pdm.png"></div>
+</details>
+<hr>
+<hr>
 </body>
 </html>

@@ -1,0 +1,17 @@
+id - int
+name - varchar(128)
+login - varchar(64)
+password - char(256)
+unit_type - enum(Unit_type)
+base_statistic - varchar(1024)
+function - varchar(2048)
+real_status - varchar(1024)
+coordinates - char(10)
+enemy_type - enum(Enemy_Type)
+strategy - varchar(2048)
+npc_type - enum(NPC_Type)
+triggers - varchar(2048)
+map_description - varchar(128)
+map - char(2048)
+progress - char(128)
+count - int

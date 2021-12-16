@@ -1,4 +1,4 @@
-package ru.vladrus13.tornado.utils
+package ru.vladrus13.pictures.utils
 
 import java.awt.Dimension
 import java.awt.Font
@@ -7,10 +7,10 @@ import java.awt.geom.AffineTransform
 
 class Font {
     companion object {
-        val jetbrainsNormal = Font("Jetbrains Mono", Font.PLAIN, 42)
-        val jetbrainsBold = Font("Jetbrains Mono", Font.BOLD, 42)
-        val jetbrainsItalic = Font("Jetbrains Mono", Font.ITALIC, 42)
-        val jetbrainsBoldItalic = Font("Jetbrains Mono", Font.BOLD or Font.ITALIC, 42)
+        val jetbrainsNormal = Font("Jetbrains Mono", Font.PLAIN, 14)
+        val jetbrainsBold = Font("Jetbrains Mono", Font.BOLD, 14)
+        val jetbrainsItalic = Font("Jetbrains Mono", Font.ITALIC, 14)
+        val jetbrainsBoldItalic = Font("Jetbrains Mono", Font.BOLD or Font.ITALIC, 14)
 
         fun getLength(pair: Pair<String, Font>): Dimension {
             return getLength(pair.first, pair.second)

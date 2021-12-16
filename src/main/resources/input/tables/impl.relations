@@ -1,2 +1,2 @@
-impl_id -> map_id, impl_current_status, impl_coordinates, enemy_id, npc_id, hero_id
-map_id, impl_coordinates -> impl_id, impl_current_status, enemy_id, npc_id, hero_id
+impl_id -> map_id, impl_current_status, impl_coordinates, enemy_id, npc_id, hero_id -> По id записи мы должны получать, что это за запись
+map_id, impl_coordinates -> impl_id, impl_current_status, enemy_id, npc_id, hero_id -> В одном месте может находиться только один объект юнита

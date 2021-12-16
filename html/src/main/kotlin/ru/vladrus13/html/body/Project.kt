@@ -1,5 +1,9 @@
 package ru.vladrus13.html.body
 
-import ru.vladrus13.html.utils.HTMLTree
+import ru.vladrus13.html.utils.Root
 
-object Project : HTMLTree(MainIndex)
+object Project : Root(
+    listOf(
+        MainIndex
+    )
+)
