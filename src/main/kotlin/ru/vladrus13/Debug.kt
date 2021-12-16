@@ -8,12 +8,15 @@ import guru.nidi.graphviz.attribute.Shape
 import guru.nidi.graphviz.engine.Format
 import guru.nidi.graphviz.graph
 import guru.nidi.graphviz.toGraphviz
+import ru.vladrus13.html.body.Project
 import ru.vladrus13.tornado.entity.table
 import ru.vladrus13.tornado.utils.Font
 import java.io.File
+import java.nio.file.Path
 import javax.imageio.ImageIO
 
-fun main() {
+fun graphviz() {
+
     val texts1 = listOf(
         listOf(
             Pair("Name", Font.jetbrainsBold),
@@ -55,10 +58,8 @@ fun main() {
         ("a" - "d")
         graph[splines(SplineMode.ORTHO)]
     }.toGraphviz().render(Format.PNG).toFile(File("temp/ban.png"))
-    /*val g = graph("graph").directed().with(
-        mutNode("a").add(Size.std().margin(.8, .7), Image.of("temp/image1.png")).addLink(
-                node("b").with(Size.std().margin(.8, .7), Image.of("temp/image2.png")))
+}
 
-    )
-    Graphviz.fromGraph(g).height(1000).render(Format.PNG).toFile(File("temp/ban.png"))*/
+fun main() {
+    Project.write(Path.of("site"))
 }

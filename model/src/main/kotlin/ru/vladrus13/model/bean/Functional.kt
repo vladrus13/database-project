@@ -4,14 +4,18 @@ import com.google.gson.annotations.SerializedName
 import ru.vladrus13.model.closure.Closure.Companion.getClosureAttributes
 import ru.vladrus13.model.utils.StringUtils.Companion.getString
 
-data class Functional(@SerializedName("from") var from: Set<String>, @SerializedName("to") val to: Set<String>) {
+data class Functional(
+    @SerializedName("from") var from: Set<String>,
+    @SerializedName("to") val to: Set<String>,
+    val cause: String? = null
+) {
     companion object {
         fun read(functional: String): Functional {
             val splitted = functional.split("->").map { it.trim() }
-            check(splitted.size == 2) { "Can't read from functional! Wrong count of -\">\"" }
+            check(splitted.size == 2 || splitted.size == 3) { "Can't read from functional! Wrong count of -\">\"" }
             val from = splitted[0].split(",").map { it.trim() }
             val to = splitted[1].split(",").map { it.trim() }
-            return Functional(from.toSet(), to.toSet())
+            return Functional(from.toSet(), to.toSet(), if (splitted.size == 3) splitted[2] else null)
         }
     }
 

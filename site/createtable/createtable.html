@@ -1,0 +1,1416 @@
+<html>
+<head>
+    <link href="/home/Vladislav.Kuznetsov/Vl/Projects/Git/database-project/site/styles.css" rel="stylesheet"
+          type="text/css">
+    <meta charset="utf-8">
+    <title>О Создании</title>
+</head>
+<body>
+<h1 class="main-title">Vladislav Kuznetsov project: RPG</h1>
+<div class="huge-text">
+    <div class="line">Давайте разберем что нам вообще нужно завести</div>
+    <div class="line">У нас есть пользователи, так что нам нужно будет завести табличку для этого. У пользователей
+        должна быть своя табличка
+    </div>
+    <div class="line">У нас есть предметы. Заведем для них отношение тоже</div>
+    <div class="line">Теперь есть сложность с абстрактными персонажами</div>
+    <div class="line">Конечно же, весьма затратно будет заводить для каждого персонажа отдельную стандартную статистику,
+        поэтому должно быть реализовано наследование между абстрактным классом персонажей и врагами с НПС. Так же, не
+        очень хорошо будет для каждого врага одного типа пользоваться новой копией данных
+    </div>
+    <div class="line">Я не хочу делать широкую табличку, потому что не люблю null, а их будет много</div>
+    <div class="line">Я не хочу делать таблицу конкретных классов, потому что сложно будет управлять разными классами в
+        глубоком наследовании
+    </div>
+    <div class="line">Однако у нас есть безвыходность в плане юнитов, уже размешенных на карте. Будет сложно делать
+        проверки на совпадение в координатах. Придется делать широкую табличку
+    </div>
+    <div class="line">Наш выбор - таблицы классов</div>
+</div>
+<hr>
+<h3>Отношения</h3>
+<hr>
+<table class="relation-table">
+    <caption>inventory</caption>
+    <tr>
+        <td class="no-borders">impl_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0, FK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">inventory_item_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">inventory_item_count</td>
+        <td class="no-borders">count</td>
+        <td class="no-borders"></td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[impl_id, inventory_item_id] -&gt; [inventory_item_count]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {inventory_item_id, inventory_item_count}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: inventory_item_id</div>
+            <div class="line">Получено замыкание: {impl_id, inventory_item_count}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: inventory_item_count</div>
+            <div class="line">Получено замыкание: {impl_id, inventory_item_id, inventory_item_count}</div>
+            <div class="line">Оно полное! Убираем ключ inventory_item_count. Подключ: impl_id, inventory_item_id</div>
+            <div class="line">У нас есть ключ impl_id, inventory_item_id</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>impl</caption>
+    <tr>
+        <td class="no-borders">impl_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK1</td>
+    </tr>
+    <tr>
+        <td class="no-borders">map_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0, FK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">impl_current_status</td>
+        <td class="no-borders">real_status</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">impl_coordinates</td>
+        <td class="no-borders">coordinates</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">enemy_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK1</td>
+    </tr>
+    <tr>
+        <td class="no-borders">npc_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK2</td>
+    </tr>
+    <tr>
+        <td class="no-borders">hero_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK3</td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[impl_id] -&gt; [map_id, impl_current_status, impl_coordinates, enemy_id, npc_id,
+                hero_id]
+            </div>
+            <div class="line">[map_id, impl_coordinates] -&gt; [impl_id, impl_current_status, enemy_id, npc_id,
+                hero_id]
+            </div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, enemy_id, npc_id,
+                hero_id, impl_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Получено замыкание: {impl_current_status, impl_coordinates, enemy_id, npc_id, hero_id}
+            </div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, enemy_id, npc_id, hero_id, impl_id,
+                impl_current_status}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_current_status. Подключ: map_id, impl_coordinates, enemy_id,
+                npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Получено замыкание: {map_id, enemy_id, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, npc_id, hero_id, impl_id,
+                impl_current_status, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: map_id, impl_coordinates, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, hero_id, impl_id, impl_current_status,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: map_id, impl_coordinates, hero_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, impl_id, impl_current_status, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_coordinates</div>
+            <div class="line">У нас есть ключ map_id, impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, npc_id, impl_id, impl_current_status,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_coordinates, npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, enemy_id, hero_id, impl_id,
+                impl_current_status, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: map_id, impl_coordinates, enemy_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, enemy_id, impl_id, impl_current_status,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_coordinates, enemy_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_coordinates, enemy_id, npc_id, impl_id,
+                impl_current_status, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_coordinates, enemy_id, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, enemy_id, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, npc_id, hero_id,
+                impl_id, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, hero_id, impl_id,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, impl_id, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_current_status, impl_coordinates
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, npc_id, impl_id,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, enemy_id, hero_id,
+                impl_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                enemy_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, enemy_id, impl_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                enemy_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, impl_coordinates, enemy_id, npc_id,
+                impl_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: map_id, impl_current_status, impl_coordinates,
+                enemy_id, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, enemy_id, npc_id,
+                hero_id, map_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ map_id. Подключ: impl_id, impl_current_status, impl_coordinates,
+                enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, enemy_id, npc_id, hero_id, map_id,
+                impl_current_status}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_current_status. Подключ: impl_id, impl_coordinates,
+                enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {impl_coordinates, enemy_id, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Получено замыкание: {impl_id, enemy_id, npc_id, hero_id, map_id, impl_current_status,
+                impl_coordinates}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_coordinates. Подключ: impl_id, enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, npc_id, hero_id, map_id, impl_current_status,
+                impl_coordinates, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, npc_id, hero_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, hero_id, map_id, impl_current_status, impl_coordinates,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, hero_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id</div>
+            <div class="line">У нас есть ключ impl_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, npc_id, map_id, impl_current_status, impl_coordinates,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, enemy_id, hero_id, map_id, impl_current_status,
+                impl_coordinates, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, enemy_id, hero_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, enemy_id, map_id, impl_current_status, impl_coordinates,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, enemy_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, enemy_id, npc_id, map_id, impl_current_status,
+                impl_coordinates, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, enemy_id, npc_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, npc_id, hero_id, map_id,
+                impl_current_status, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, impl_coordinates, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, hero_id, map_id, impl_current_status,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, impl_coordinates, hero_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, map_id, impl_current_status, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, npc_id, map_id, impl_current_status,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_coordinates, npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, enemy_id, hero_id, map_id,
+                impl_current_status, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, impl_coordinates, enemy_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, enemy_id, map_id, impl_current_status,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_coordinates, enemy_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_coordinates, enemy_id, npc_id, map_id,
+                impl_current_status, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_coordinates, enemy_id, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, enemy_id, npc_id, hero_id, map_id,
+                impl_coordinates}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_coordinates. Подключ: impl_id, impl_current_status,
+                enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {impl_current_status, enemy_id, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, npc_id, hero_id, map_id,
+                impl_coordinates, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, impl_current_status, npc_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, hero_id, map_id, impl_coordinates,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, impl_current_status, hero_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, map_id, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, npc_id, map_id, impl_coordinates,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status, npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, enemy_id, hero_id, map_id,
+                impl_coordinates, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, impl_current_status, enemy_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, enemy_id, map_id, impl_coordinates,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status, enemy_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, enemy_id, npc_id, map_id,
+                impl_coordinates, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status, enemy_id,
+                npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, npc_id, hero_id,
+                map_id, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, impl_current_status,
+                impl_coordinates, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {impl_current_status, impl_coordinates, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, hero_id, map_id,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, impl_current_status, impl_coordinates,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, map_id, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status,
+                impl_coordinates
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, npc_id, map_id,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status, impl_coordinates,
+                npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, enemy_id, hero_id,
+                map_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, impl_current_status, impl_coordinates,
+                enemy_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {impl_current_status, impl_coordinates, enemy_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, enemy_id, map_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status, impl_coordinates,
+                enemy_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, impl_current_status, impl_coordinates, enemy_id, npc_id,
+                map_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, impl_current_status, impl_coordinates,
+                enemy_id, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {impl_current_status, impl_coordinates, enemy_id, npc_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, enemy_id, npc_id, hero_id,
+                impl_current_status}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_current_status. Подключ: impl_id, map_id, impl_coordinates,
+                enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, enemy_id, npc_id, hero_id, impl_current_status,
+                impl_coordinates}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_coordinates. Подключ: impl_id, map_id, enemy_id, npc_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, npc_id, hero_id, impl_current_status,
+                impl_coordinates, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, map_id, npc_id, hero_id</div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, hero_id, impl_current_status, impl_coordinates,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, hero_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, npc_id, impl_current_status, impl_coordinates,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, npc_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, enemy_id, hero_id, impl_current_status,
+                impl_coordinates, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, enemy_id, hero_id</div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, enemy_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, enemy_id, impl_current_status, impl_coordinates,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, enemy_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, enemy_id, npc_id, impl_current_status,
+                impl_coordinates, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, enemy_id, npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, enemy_id, npc_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, npc_id, hero_id,
+                impl_current_status, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, map_id, impl_coordinates, npc_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, hero_id, impl_current_status,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, impl_coordinates, hero_id</div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, impl_current_status, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, npc_id, impl_current_status,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_coordinates, npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, enemy_id, hero_id,
+                impl_current_status, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, impl_coordinates, enemy_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, enemy_id, impl_current_status,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_coordinates, enemy_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_coordinates, enemy_id, npc_id,
+                impl_current_status, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_coordinates, enemy_id,
+                npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, enemy_id, npc_id, hero_id,
+                impl_coordinates}
+            </div>
+            <div class="line">Оно полное! Убираем ключ impl_coordinates. Подключ: impl_id, map_id, impl_current_status,
+                enemy_id, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, npc_id, hero_id,
+                impl_coordinates, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, map_id, impl_current_status, npc_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, npc_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, hero_id, impl_coordinates,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, impl_current_status, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, npc_id, impl_coordinates,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, enemy_id, hero_id,
+                impl_coordinates, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, impl_current_status, enemy_id,
+                hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, enemy_id, hero_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, enemy_id, impl_coordinates,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status,
+                enemy_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, enemy_id, npc_id,
+                impl_coordinates, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status, enemy_id,
+                npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Получено замыкание: {map_id, impl_current_status, enemy_id, npc_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, npc_id,
+                hero_id, enemy_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ enemy_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates, npc_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, hero_id,
+                enemy_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, npc_id,
+                enemy_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                hero_id, npc_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ npc_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates, enemy_id, hero_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates, enemy_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {impl_id, map_id, impl_current_status, impl_coordinates, enemy_id,
+                npc_id, hero_id}
+            </div>
+            <div class="line">Оно полное! Убираем ключ hero_id. Подключ: impl_id, map_id, impl_current_status,
+                impl_coordinates, enemy_id, npc_id
+            </div>
+            <div class="line">Попытка убрать ключ: impl_id</div>
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Попытка убрать ключ: impl_current_status</div>
+            <div class="line">Попытка убрать ключ: impl_coordinates</div>
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>map</caption>
+    <tr>
+        <td class="no-borders">map_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">map_name</td>
+        <td class="no-borders">name</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">map_description</td>
+        <td class="no-borders">map_description</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">map_map</td>
+        <td class="no-borders">map</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">world_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[map_id] -&gt; [map_name, map_description, map_map, world_id]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: map_id</div>
+            <div class="line">Получено замыкание: {map_name, map_description, map_map, world_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Получено замыкание: {map_id, map_description, map_map, world_id, map_name}</div>
+            <div class="line">Оно полное! Убираем ключ map_name. Подключ: map_id, map_description, map_map, world_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Получено замыкание: {map_id, map_map, world_id, map_name, map_description}</div>
+            <div class="line">Оно полное! Убираем ключ map_description. Подключ: map_id, map_map, world_id</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Получено замыкание: {map_id, world_id, map_name, map_description, map_map}</div>
+            <div class="line">Оно полное! Убираем ключ map_map. Подключ: map_id, world_id</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_description, map_map, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id</div>
+            <div class="line">У нас есть ключ map_id</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_map, map_name, map_description, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_map</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Получено замыкание: {map_id, map_description, world_id, map_name, map_map}</div>
+            <div class="line">Оно полное! Убираем ключ map_map. Подключ: map_id, map_description, world_id</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_description, map_name, map_map, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_description</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_description, map_map, map_name, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_description, map_map</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_map, world_id, map_description}</div>
+            <div class="line">Оно полное! Убираем ключ map_description. Подключ: map_id, map_name, map_map, world_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Получено замыкание: {map_id, map_name, world_id, map_description, map_map}</div>
+            <div class="line">Оно полное! Убираем ключ map_map. Подключ: map_id, map_name, world_id</div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_description, map_map, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_name</div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_map, map_description, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_name, map_map</div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_description, world_id, map_map}</div>
+            <div class="line">Оно полное! Убираем ключ map_map. Подключ: map_id, map_name, map_description, world_id
+            </div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_description, map_map, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_name, map_description</div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {map_id, map_name, map_description, map_map, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: map_id, map_name, map_description, map_map
+            </div>
+            <div class="line">Попытка убрать ключ: map_name</div>
+            <div class="line">Попытка убрать ключ: map_description</div>
+            <div class="line">Попытка убрать ключ: map_map</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>hero</caption>
+    <tr>
+        <td class="no-borders">hero_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">account_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">world_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK1</td>
+    </tr>
+    <tr>
+        <td class="no-borders">unit_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK2</td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[hero_id] -&gt; [account_id, world_id, unit_id]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: hero_id</div>
+            <div class="line">Получено замыкание: {account_id, world_id, unit_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Получено замыкание: {hero_id, world_id, unit_id, account_id}</div>
+            <div class="line">Оно полное! Убираем ключ account_id. Подключ: hero_id, world_id, unit_id</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {hero_id, unit_id, account_id, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: hero_id, unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, world_id, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id</div>
+            <div class="line">У нас есть ключ hero_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {hero_id, world_id, account_id, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, world_id</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, unit_id, world_id}</div>
+            <div class="line">Оно полное! Убираем ключ world_id. Подключ: hero_id, account_id, unit_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, world_id, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, account_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {hero_id, account_id, world_id, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: hero_id, account_id, world_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>unit</caption>
+    <tr>
+        <td class="no-borders">unit_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">unit_type</td>
+        <td class="no-borders">unit_type</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">unit_base_statistic</td>
+        <td class="no-borders">base_statistic</td>
+        <td class="no-borders"></td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[unit_id] -&gt; [unit_type, unit_base_statistic]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {unit_type, unit_base_statistic}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: unit_type</div>
+            <div class="line">Получено замыкание: {unit_id, unit_base_statistic, unit_type}</div>
+            <div class="line">Оно полное! Убираем ключ unit_type. Подключ: unit_id, unit_base_statistic</div>
+            <div class="line">Попытка убрать ключ: unit_base_statistic</div>
+            <div class="line">Получено замыкание: {unit_id, unit_type, unit_base_statistic}</div>
+            <div class="line">Оно полное! Убираем ключ unit_base_statistic. Подключ: unit_id</div>
+            <div class="line">У нас есть ключ unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_base_statistic</div>
+            <div class="line">Получено замыкание: {unit_id, unit_type, unit_base_statistic}</div>
+            <div class="line">Оно полное! Убираем ключ unit_base_statistic. Подключ: unit_id, unit_type</div>
+            <div class="line">Попытка убрать ключ: unit_type</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>enemy</caption>
+    <tr>
+        <td class="no-borders">enemy_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">enemy_type</td>
+        <td class="no-borders">enemy_type</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">unit_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">enemy_strategy</td>
+        <td class="no-borders">strategy</td>
+        <td class="no-borders"></td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[enemy_id] -&gt; [unit_id, enemy_type, enemy_strategy] (Конечно же, по id противника мы
+                должны понимать, кто это и как он действует)
+            </div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: enemy_id</div>
+            <div class="line">Получено замыкание: {enemy_type, unit_id, enemy_strategy}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: enemy_type</div>
+            <div class="line">Получено замыкание: {enemy_id, unit_id, enemy_strategy, enemy_type}</div>
+            <div class="line">Оно полное! Убираем ключ enemy_type. Подключ: enemy_id, unit_id, enemy_strategy</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {enemy_id, enemy_strategy, unit_id, enemy_type}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: enemy_id, enemy_strategy</div>
+            <div class="line">Попытка убрать ключ: enemy_strategy</div>
+            <div class="line">Получено замыкание: {enemy_id, unit_id, enemy_type, enemy_strategy}</div>
+            <div class="line">Оно полное! Убираем ключ enemy_strategy. Подключ: enemy_id</div>
+            <div class="line">У нас есть ключ enemy_id</div>
+            <div class="line">Попытка убрать ключ: enemy_strategy</div>
+            <div class="line">Получено замыкание: {enemy_id, unit_id, enemy_type, enemy_strategy}</div>
+            <div class="line">Оно полное! Убираем ключ enemy_strategy. Подключ: enemy_id, unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {enemy_id, enemy_type, enemy_strategy, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: enemy_id, enemy_type, enemy_strategy</div>
+            <div class="line">Попытка убрать ключ: enemy_type</div>
+            <div class="line">Попытка убрать ключ: enemy_strategy</div>
+            <div class="line">Получено замыкание: {enemy_id, enemy_type, unit_id, enemy_strategy}</div>
+            <div class="line">Оно полное! Убираем ключ enemy_strategy. Подключ: enemy_id, enemy_type</div>
+            <div class="line">Попытка убрать ключ: enemy_type</div>
+            <div class="line">Попытка убрать ключ: enemy_strategy</div>
+            <div class="line">Получено замыкание: {enemy_id, enemy_type, unit_id, enemy_strategy}</div>
+            <div class="line">Оно полное! Убираем ключ enemy_strategy. Подключ: enemy_id, enemy_type, unit_id</div>
+            <div class="line">Попытка убрать ключ: enemy_type</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>account</caption>
+    <tr>
+        <td class="no-borders">account_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK1</td>
+    </tr>
+    <tr>
+        <td class="no-borders">account_name</td>
+        <td class="no-borders">name</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">account_login</td>
+        <td class="no-borders">login</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">account_password</td>
+        <td class="no-borders">password</td>
+        <td class="no-borders"></td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[account_id] -&gt; [account_name, account_login, account_password] (Конечно же, по id мы
+                должны уметь получать уникальный аккаунт)
+            </div>
+            <div class="line">[account_login] -&gt; [account_id] (Конечно же, по логину при входе мы должны получать id
+                аккаунта)
+            </div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Получено замыкание: {account_name, account_login, account_password, account_id}</div>
+            <div class="line">Оно полное! Убираем ключ account_id. Подключ: account_name, account_login,
+                account_password
+            </div>
+            <div class="line">Попытка убрать ключ: account_name</div>
+            <div class="line">Получено замыкание: {account_login, account_password, account_id, account_name}</div>
+            <div class="line">Оно полное! Убираем ключ account_name. Подключ: account_login, account_password</div>
+            <div class="line">Попытка убрать ключ: account_login</div>
+            <div class="line">Получено замыкание: {account_password}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: account_password</div>
+            <div class="line">Получено замыкание: {account_login, account_id, account_name, account_password}</div>
+            <div class="line">Оно полное! Убираем ключ account_password. Подключ: account_login</div>
+            <div class="line">У нас есть ключ account_login</div>
+            <div class="line">Попытка убрать ключ: account_login</div>
+            <div class="line">Получено замыкание: {account_name, account_password}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: account_password</div>
+            <div class="line">Получено замыкание: {account_name, account_login, account_id, account_password}</div>
+            <div class="line">Оно полное! Убираем ключ account_password. Подключ: account_name, account_login</div>
+            <div class="line">Попытка убрать ключ: account_name</div>
+            <div class="line">Попытка убрать ключ: account_name</div>
+            <div class="line">Получено замыкание: {account_id, account_login, account_password, account_name}</div>
+            <div class="line">Оно полное! Убираем ключ account_name. Подключ: account_id, account_login,
+                account_password
+            </div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: account_login</div>
+            <div class="line">Получено замыкание: {account_id, account_password, account_name, account_login}</div>
+            <div class="line">Оно полное! Убираем ключ account_login. Подключ: account_id, account_password</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: account_password</div>
+            <div class="line">Получено замыкание: {account_id, account_name, account_login, account_password}</div>
+            <div class="line">Оно полное! Убираем ключ account_password. Подключ: account_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Получено замыкание: {}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">У нас есть ключ account_id</div>
+            <div class="line">Попытка убрать ключ: account_password</div>
+            <div class="line">Получено замыкание: {account_id, account_login, account_name, account_password}</div>
+            <div class="line">Оно полное! Убираем ключ account_password. Подключ: account_id, account_login</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: account_login</div>
+            <div class="line">Попытка убрать ключ: account_login</div>
+            <div class="line">Получено замыкание: {account_id, account_name, account_password, account_login}</div>
+            <div class="line">Оно полное! Убираем ключ account_login. Подключ: account_id, account_name,
+                account_password
+            </div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: account_name</div>
+            <div class="line">Попытка убрать ключ: account_password</div>
+            <div class="line">Получено замыкание: {account_id, account_name, account_login, account_password}</div>
+            <div class="line">Оно полное! Убираем ключ account_password. Подключ: account_id, account_name</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Получено замыкание: {account_name}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: account_name</div>
+            <div class="line">Попытка убрать ключ: account_password</div>
+            <div class="line">Получено замыкание: {account_id, account_name, account_login, account_password}</div>
+            <div class="line">Оно полное! Убираем ключ account_password. Подключ: account_id, account_name,
+                account_login
+            </div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Попытка убрать ключ: account_name</div>
+            <div class="line">Попытка убрать ключ: account_login</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>item</caption>
+    <tr>
+        <td class="no-borders">item_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">item_function</td>
+        <td class="no-borders">function</td>
+        <td class="no-borders"></td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[item_id] -&gt; [item_function]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: item_id</div>
+            <div class="line">Получено замыкание: {item_function}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: item_function</div>
+            <div class="line">Получено замыкание: {item_id, item_function}</div>
+            <div class="line">Оно полное! Убираем ключ item_function. Подключ: item_id</div>
+            <div class="line">У нас есть ключ item_id</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>friendship</caption>
+    <tr>
+        <td class="no-borders">friendship_account_from_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">friendship_account_to_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text"></div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: friendship_account_from_id</div>
+            <div class="line">Получено замыкание: {friendship_account_to_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: friendship_account_to_id</div>
+            <div class="line">Получено замыкание: {friendship_account_from_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">У нас есть ключ friendship_account_from_id, friendship_account_to_id</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>world</caption>
+    <tr>
+        <td class="no-borders">world_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">world_name</td>
+        <td class="no-borders">name</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">account_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[world_id] -&gt; [world_name, account_id]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: world_id</div>
+            <div class="line">Получено замыкание: {world_name, account_id}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: world_name</div>
+            <div class="line">Получено замыкание: {world_id, account_id, world_name}</div>
+            <div class="line">Оно полное! Убираем ключ world_name. Подключ: world_id, account_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Получено замыкание: {world_id, world_name, account_id}</div>
+            <div class="line">Оно полное! Убираем ключ account_id. Подключ: world_id</div>
+            <div class="line">У нас есть ключ world_id</div>
+            <div class="line">Попытка убрать ключ: account_id</div>
+            <div class="line">Получено замыкание: {world_id, world_name, account_id}</div>
+            <div class="line">Оно полное! Убираем ключ account_id. Подключ: world_id, world_name</div>
+            <div class="line">Попытка убрать ключ: world_name</div>
+            <br></div>
+    </div>
+</details>
+<table class="relation-table">
+    <caption>npc</caption>
+    <tr>
+        <td class="no-borders">npc_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">PK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">npc_type</td>
+        <td class="no-borders">npc_type</td>
+        <td class="no-borders"></td>
+    </tr>
+    <tr>
+        <td class="no-borders">unit_id</td>
+        <td class="no-borders">id</td>
+        <td class="no-borders">FK0</td>
+    </tr>
+    <tr>
+        <td class="no-borders">npc_triggers</td>
+        <td class="no-borders">triggers</td>
+        <td class="no-borders"></td>
+    </tr>
+</table>
+<details class="spoiler">
+    <summary>Функциональные зависимости</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">[npc_id] -&gt; [npc_type, unit_id, npc_triggers]</div>
+        </div>
+    </div>
+</details>
+<details class="spoiler">
+    <summary>Процесс получения ключей</summary>
+    <div class="indent">
+        <div class="huge-text">
+            <div class="line">Попытка убрать ключ: npc_id</div>
+            <div class="line">Получено замыкание: {npc_type, unit_id, npc_triggers}</div>
+            <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
+            <div class="line">Попытка убрать ключ: npc_type</div>
+            <div class="line">Получено замыкание: {npc_id, unit_id, npc_triggers, npc_type}</div>
+            <div class="line">Оно полное! Убираем ключ npc_type. Подключ: npc_id, unit_id, npc_triggers</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {npc_id, npc_triggers, npc_type, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: npc_id, npc_triggers</div>
+            <div class="line">Попытка убрать ключ: npc_triggers</div>
+            <div class="line">Получено замыкание: {npc_id, npc_type, unit_id, npc_triggers}</div>
+            <div class="line">Оно полное! Убираем ключ npc_triggers. Подключ: npc_id</div>
+            <div class="line">У нас есть ключ npc_id</div>
+            <div class="line">Попытка убрать ключ: npc_triggers</div>
+            <div class="line">Получено замыкание: {npc_id, unit_id, npc_type, npc_triggers}</div>
+            <div class="line">Оно полное! Убираем ключ npc_triggers. Подключ: npc_id, unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <div class="line">Получено замыкание: {npc_id, npc_type, npc_triggers, unit_id}</div>
+            <div class="line">Оно полное! Убираем ключ unit_id. Подключ: npc_id, npc_type, npc_triggers</div>
+            <div class="line">Попытка убрать ключ: npc_type</div>
+            <div class="line">Попытка убрать ключ: npc_triggers</div>
+            <div class="line">Получено замыкание: {npc_id, npc_type, unit_id, npc_triggers}</div>
+            <div class="line">Оно полное! Убираем ключ npc_triggers. Подключ: npc_id, npc_type</div>
+            <div class="line">Попытка убрать ключ: npc_type</div>
+            <div class="line">Попытка убрать ключ: npc_triggers</div>
+            <div class="line">Получено замыкание: {npc_id, npc_type, unit_id, npc_triggers}</div>
+            <div class="line">Оно полное! Убираем ключ npc_triggers. Подключ: npc_id, npc_type, unit_id</div>
+            <div class="line">Попытка убрать ключ: npc_type</div>
+            <div class="line">Попытка убрать ключ: unit_id</div>
+            <br></div>
+    </div>
+</details>
+</body>
+</html>

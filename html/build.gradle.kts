@@ -19,9 +19,8 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("com.google.code.gson:gson:2.8.9")
-    implementation("no.tornado:tornadofx:1.7.20")
+    implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.3")
+    implementation("org.jetbrains.kotlin-wrappers:kotlin-css:1.0.0-pre.280-kotlin-1.6.0")
     implementation(project(":model"))
 }
 

@@ -28,4 +28,8 @@ data class Relations(
             it.checkContain()
         }
     }
+
+    operator fun iterator(): Iterator<Relation> {
+        return relations.iterator()
+    }
 }

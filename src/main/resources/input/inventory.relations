@@ -1,2 +1,0 @@
-inventory_item_id -> inventory_real_item_id, inventory_item_count
-inventory_real_item_id -> inventory_item_id

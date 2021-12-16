@@ -1,0 +1,23 @@
+* {
+    width: 40rem;
+}
+
+.main-title {
+    font-family: monospace;
+}
+
+.huge-text .line {
+    font-family: system-ui;
+}
+
+.indent {
+    border-left: 1rem solid white;
+}
+
+.relation-table {
+    border: 1px solid black;
+}
+
+.no-borders {
+    border: 0 solid white;
+}

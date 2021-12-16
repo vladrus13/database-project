@@ -13,7 +13,9 @@ data class Relation(
         fun read(path: Path, name: String): Relation {
             val attributes = Attributes.read(path.resolve("$name.attributes").readText())
             val functionals = Functionals.read(path.resolve("$name.relations").readText())
-            return Relation(name, attributes, functionals)
+            return Relation(name, attributes, functionals).apply {
+                checkContain()
+            }
         }
     }
 

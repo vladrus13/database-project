@@ -1,2 +1,0 @@
-hero_id -> master_id, world_id, hero_world_progress, map_id, unit_id, hero_current_state, hero_coordinates
-world_id, map_id, hero_coordinates -> hero_id

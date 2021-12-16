@@ -1,0 +1,2 @@
+impl_id -> map_id, impl_current_status, impl_coordinates, enemy_id, npc_id, hero_id
+map_id, impl_coordinates -> impl_id, impl_current_status, enemy_id, npc_id, hero_id

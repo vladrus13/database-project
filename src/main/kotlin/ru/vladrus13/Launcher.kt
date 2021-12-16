@@ -3,8 +3,6 @@ package ru.vladrus13
 import ru.vladrus13.tornado.ProjectApp
 import tornadofx.launch
 
-// TODO tornadofx
-
 fun main() {
     launch<ProjectApp>()
     /*
