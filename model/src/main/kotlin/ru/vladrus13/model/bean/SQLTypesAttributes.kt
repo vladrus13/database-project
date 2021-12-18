@@ -1,10 +1,10 @@
 package ru.vladrus13.model.bean
 
-import java.nio.file.Path
+import ru.vladrus13.model.utils.pathToResources
 import kotlin.io.path.readText
 
 val SqlTypes =
-    Path.of("src").resolve("main").resolve("resources").resolve("input").resolve("type-mapping")
+    pathToResources.resolve("input").resolve("type-mapping")
         .resolve("types-mapping.txt").readText()
         .let {
             it.split(System.lineSeparator()).map { line ->

@@ -6,7 +6,7 @@ import tornadofx.launch
 fun main() {
     launch<ProjectApp>()
     /*
-    val path = Path.of("src").resolve("main").resolve("resources").resolve("output")
+    val path = pathToInput.resolve("output")
     Files.createDirectories(path)
     Steps.runSteps(
         path.resolve("shortInfo.txt").outputStream().bufferedWriter(),

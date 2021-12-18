@@ -1,7 +1,8 @@
 package ru.vladrus13.html.bean
 
 import ru.vladrus13.model.bean.Relations
+import ru.vladrus13.model.utils.pathToResources
 import java.nio.file.Path
 
-val pathToFiles: Path = Path.of("src").resolve("main").resolve("resources").resolve("input").resolve("tables")
+val pathToFiles: Path = pathToResources.resolve("input").resolve("tables")
 val relationsContainer = Relations.read(pathToFiles)

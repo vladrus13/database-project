@@ -1,6 +1,7 @@
 package ru.vladrus13.model.step
 
 import ru.vladrus13.model.bean.Result
+import ru.vladrus13.model.utils.pathToResources
 import java.io.BufferedWriter
 import java.nio.file.Path
 import kotlin.reflect.KClass
@@ -34,7 +35,7 @@ class Steps {
             val steps = list.size
             val onePart = 1.0 / steps
             println(getPercent(0.0, "Start process"))
-            var preMove: Any = Path.of("src").resolve("main").resolve("resources").resolve("input")
+            var preMove: Any = pathToResources.resolve("input")
             var previousClass: KClass<*> = Path::class
             list.forEachIndexed { stepIndex, step ->
                 check(step.getInputClass().javaObjectType == previousClass.javaObjectType)
