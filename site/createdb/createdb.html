@@ -1,0 +1,150 @@
+<html>
+<head>
+    <link href="/styles.css" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+    <title>Создание DB</title>
+</head>
+<body>
+<h1 class="main-title">Vladislav Kuznetsov project: RPG</h1>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Inventory</div>
+    <div class="line">(</div>
+    <div class="line">impl_id id,</div>
+    <div class="line">inventory_item_count count,</div>
+    <div class="line">item_id id,</div>
+    <div class="line">constraints inventory_impl_id_item_id_pk foreign key (impl_id, item_id),</div>
+    <div class="line">constraints inventory_impl_id_fk foreign key (impl_id) references impl(impl_id),</div>
+    <div class="line">constraints inventory_item_id_fk foreign key (item_id) references item(item_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Impl</div>
+    <div class="line">(</div>
+    <div class="line">enemy_id id,</div>
+    <div class="line">hero_id id,</div>
+    <div class="line">impl_coordinates coordinates,</div>
+    <div class="line">impl_current_status real_status,</div>
+    <div class="line">impl_id id,</div>
+    <div class="line">map_id id,</div>
+    <div class="line">npc_id id,</div>
+    <div class="line">constraints impl_map_id_impl_coordinates_pk foreign key (map_id, impl_coordinates),</div>
+    <div class="line">constraints impl_impl_id_k key (impl_id),</div>
+    <div class="line">constraints impl_enemy_id_fk foreign key (enemy_id) references enemy(enemy_id),</div>
+    <div class="line">constraints impl_hero_id_fk foreign key (hero_id) references hero(hero_id),</div>
+    <div class="line">constraints impl_map_id_fk foreign key (map_id) references map(map_id),</div>
+    <div class="line">constraints impl_npc_id_fk foreign key (npc_id) references npc(npc_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Map</div>
+    <div class="line">(</div>
+    <div class="line">map_description map_description,</div>
+    <div class="line">map_id id,</div>
+    <div class="line">map_map map,</div>
+    <div class="line">map_name name,</div>
+    <div class="line">world_id id,</div>
+    <div class="line">constraints map_map_id_pk foreign key (map_id),</div>
+    <div class="line">constraints map_world_id_fk foreign key (world_id) references world(world_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Hero</div>
+    <div class="line">(</div>
+    <div class="line">account_id id,</div>
+    <div class="line">hero_id id,</div>
+    <div class="line">hero_world_progress progress,</div>
+    <div class="line">unit_id id,</div>
+    <div class="line">constraints hero_hero_id_pk foreign key (hero_id),</div>
+    <div class="line">constraints hero_account_id_fk foreign key (account_id) references account(account_id),</div>
+    <div class="line">constraints hero_unit_id_fk foreign key (unit_id) references unit(unit_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Unit</div>
+    <div class="line">(</div>
+    <div class="line">unit_base_statistic base_statistic,</div>
+    <div class="line">unit_id id,</div>
+    <div class="line">unit_type unit_type,</div>
+    <div class="line">constraints unit_unit_id_pk foreign key (unit_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Enemy</div>
+    <div class="line">(</div>
+    <div class="line">enemy_id id,</div>
+    <div class="line">enemy_strategy strategy,</div>
+    <div class="line">enemy_type enemy_type,</div>
+    <div class="line">unit_id id,</div>
+    <div class="line">constraints enemy_enemy_id_pk foreign key (enemy_id),</div>
+    <div class="line">constraints enemy_unit_id_fk foreign key (unit_id) references unit(unit_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Account</div>
+    <div class="line">(</div>
+    <div class="line">account_id id,</div>
+    <div class="line">account_login login,</div>
+    <div class="line">account_name name,</div>
+    <div class="line">account_password password,</div>
+    <div class="line">constraints account_account_login_pk foreign key (account_login),</div>
+    <div class="line">constraints account_account_id_k key (account_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Item</div>
+    <div class="line">(</div>
+    <div class="line">item_function function,</div>
+    <div class="line">item_id id,</div>
+    <div class="line">constraints item_item_id_pk foreign key (item_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Friendship</div>
+    <div class="line">(</div>
+    <div class="line">account_id-from id,</div>
+    <div class="line">account_id-to id,</div>
+    <div class="line">constraints friendship_account_id-from_account_id-to_pk foreign key (account_id-from,
+        account_id-to),
+    </div>
+    <div class="line">constraints friendship_account_id-from_fk foreign key (account_id-from) references
+        account(account_id),
+    </div>
+    <div class="line">constraints friendship_account_id-to_fk foreign key (account_id-to) references
+        account(account_id)
+    </div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table World</div>
+    <div class="line">(</div>
+    <div class="line">account_id id,</div>
+    <div class="line">world_id id,</div>
+    <div class="line">world_name name,</div>
+    <div class="line">constraints world_world_id_pk foreign key (world_id),</div>
+    <div class="line">constraints world_account_id_fk foreign key (account_id) references account(account_id)</div>
+    <div class="line">);</div>
+    <br></div>
+<h3></h3>
+<div class="huge-text">
+    <div class="line">create table Npc</div>
+    <div class="line">(</div>
+    <div class="line">npc_id id,</div>
+    <div class="line">npc_triggers triggers,</div>
+    <div class="line">npc_type npc_type,</div>
+    <div class="line">unit_id id,</div>
+    <div class="line">constraints npc_npc_id_pk foreign key (npc_id),</div>
+    <div class="line">constraints npc_unit_id_fk foreign key (unit_id) references unit(unit_id)</div>
+    <div class="line">);</div>
+    <br></div>
+</body>
+</html>
