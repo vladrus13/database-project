@@ -59,4 +59,8 @@ data class Functional(
         }
         return Result(preResult, null)
     }
+
+    fun isTrivial(): Boolean {
+        return from.containsAll(to)
+    }
 }

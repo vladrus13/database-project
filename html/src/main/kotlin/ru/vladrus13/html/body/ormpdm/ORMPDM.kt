@@ -8,8 +8,6 @@ import ru.vladrus13.model.utils.pathToResources
 import java.nio.file.Path
 import javax.imageio.ImageIO
 
-val pathToPictures: Path = pathToResources.resolve("input").resolve("pic")
-
 object ORMPDM : NestedHTMLFile(
     HTMLProjectFile(
         name = "ormpdm",
@@ -26,6 +24,7 @@ object ORMPDM : NestedHTMLFile(
     )
 ) {
     override fun beforeSave(path: Path) {
+        val pathToPictures: Path = pathToResources.resolve("input").resolve("pic")
         val erm = ImageIO.read(pathToPictures.resolve("ERM.png").toFile())
         val pdm = ImageIO.read(pathToPictures.resolve("PDM.png").toFile())
         ImageIO.write(erm, "png", path.resolve("erm.png").toFile())

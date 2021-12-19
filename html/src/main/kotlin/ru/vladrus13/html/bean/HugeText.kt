@@ -15,3 +15,7 @@ fun FlowContent.hugeText(array: List<String>, additionalTags: String? = null) {
         }
     }
 }
+
+fun FlowContent.hugeDividedText(string: String, additionalTags: String? = null) {
+    hugeText(string.split("\n"), additionalTags)
+}

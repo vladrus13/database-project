@@ -5,7 +5,7 @@ import ru.vladrus13.model.bean.Relation
 import ru.vladrus13.model.bean.TypedAttributes
 import ru.vladrus13.model.key.Keys.Companion.getKeys
 
-fun FlowContent.relationTable(relation: Relation) {
+fun FlowContent.relationTable(relation: Relation, keyGet: Boolean = true, ermpdm: Boolean = true) {
     val keys = relation.getKeys()
     val typed = TypedAttributes.toTyped(relation)
     table(classes = "relation-table") {
@@ -44,25 +44,29 @@ fun FlowContent.relationTable(relation: Relation) {
             "${it.from} -> ${it.to}" + if (it.cause != null) " (${it.cause})" else ""
         })
     })
-    spoiler({
-        +"Процесс получения ключей"
-    }, {
-        hugeText(keys.fullInfo.toString().split("\n").toList())
-    })
-    spoiler({
-        +"Более красивая картинки - ERM"
-    }, {
-        img(
-            src = "${relation.name}-erm.png",
-            alt = "Тут должна была быть картинка ${relation.name} ERM, но по какой то причине она не прогрузилась"
-        )
-    })
-    spoiler({
-        +"Более красивая картинки - PDM"
-    }, {
-        img(
-            src = "${relation.name}-pdm.png",
-            alt = "Тут должна была быть картинка ${relation.name} PDM, но по какой то причине она не прогрузилась"
-        )
-    })
+    if (keyGet) {
+        spoiler({
+            +"Процесс получения ключей"
+        }, {
+            hugeText(keys.fullInfo.toString().split("\n").toList())
+        })
+    }
+    if (ermpdm) {
+        spoiler({
+            +"Более красивая картинки - ERM"
+        }, {
+            img(
+                src = "${relation.name}-erm.png",
+                alt = "Тут должна была быть картинка ${relation.name} ERM, но по какой то причине она не прогрузилась"
+            )
+        })
+        spoiler({
+            +"Более красивая картинки - PDM"
+        }, {
+            img(
+                src = "${relation.name}-pdm.png",
+                alt = "Тут должна была быть картинка ${relation.name} PDM, но по какой то причине она не прогрузилась"
+            )
+        })
+    }
 }

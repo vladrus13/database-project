@@ -1,6 +1,9 @@
 package ru.vladrus13.model.step
 
 import ru.vladrus13.model.bean.Result
+import ru.vladrus13.model.step.irreducible.IrreducibleSetSplittingStep
+import ru.vladrus13.model.step.irreducible.IrreducibleSetUselessAttributesStep
+import ru.vladrus13.model.step.irreducible.IrreducibleSetUselessFunctionalsStep
 import ru.vladrus13.model.utils.pathToResources
 import java.io.BufferedWriter
 import java.nio.file.Path
