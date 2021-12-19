@@ -25,5 +25,3 @@ map.map_map - map
 hero.hero_id - id
 hero.hero_world_progress - progress
 inventory.inventory_item_count - count
-friendship.friendship_account_from_id - id
-friendship.friendship_account_to_id - id

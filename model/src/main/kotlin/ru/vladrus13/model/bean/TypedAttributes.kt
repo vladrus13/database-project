@@ -20,7 +20,18 @@ class TypedAttributes(val attributes: MutableSet<Pair<String, String>>) {
             TypedAttributes(relation.attributes.attributes.map {
                 Pair(it, it.split("_")[0] + "." + it)
             }.map {
-                Pair(it.first, types[it.second] ?: throw IllegalStateException("Can't find ${it.second}"))
+                val consis = if (types[it.second] == null) {
+                    val x = types.filter { entry ->
+                        it.second.startsWith(entry.key)
+                    }.map { entry ->
+                        entry.value
+                    }
+                    if (x.isEmpty()) throw IllegalStateException("Can't find ${it.second}")
+                    x[0]
+                } else {
+                    types[it.second]!!
+                }
+                Pair(it.first, consis)
             }.toMutableSet())
     }
 

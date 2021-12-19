@@ -1337,14 +1337,14 @@
 <table class="relation-table">
   <caption>friendship</caption>
   <tr>
-    <td class="no-borders">friendship_account_from_id</td>
+    <td class="no-borders">account_id_from</td>
     <td class="no-borders">id</td>
-    <td class="no-borders">PK0</td>
+    <td class="no-borders">PK0, FK0</td>
   </tr>
   <tr>
-    <td class="no-borders">friendship_account_to_id</td>
+    <td class="no-borders">account_id_to</td>
     <td class="no-borders">id</td>
-    <td class="no-borders">PK0</td>
+    <td class="no-borders">PK0, FK1</td>
   </tr>
 </table>
 <details class="spoiler">
@@ -1357,13 +1357,13 @@
   <summary>Процесс получения ключей</summary>
   <div class="indent">
     <div class="huge-text">
-      <div class="line">Попытка убрать ключ: friendship_account_from_id</div>
-      <div class="line">Получено замыкание: {friendship_account_to_id}</div>
+      <div class="line">Попытка убрать ключ: account_id_from</div>
+      <div class="line">Получено замыкание: {account_id_to}</div>
       <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
-      <div class="line">Попытка убрать ключ: friendship_account_to_id</div>
-      <div class="line">Получено замыкание: {friendship_account_from_id}</div>
+      <div class="line">Попытка убрать ключ: account_id_to</div>
+      <div class="line">Получено замыкание: {account_id_from}</div>
       <div class="line">Оно не полное. Мы не будем убирать этот ключ</div>
-      <div class="line">У нас есть ключ friendship_account_from_id, friendship_account_to_id</div>
+      <div class="line">У нас есть ключ account_id_from, account_id_to</div>
       <br></div>
   </div>
 </details>
