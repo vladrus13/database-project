@@ -2,6 +2,7 @@ package ru.vladrus13.html.body.createtable
 
 import kotlinx.html.h3
 import kotlinx.html.hr
+import kotlinx.html.img
 import ru.vladrus13.html.bean.hugeText
 import ru.vladrus13.html.bean.relationTable
 import ru.vladrus13.html.bean.relationsContainer
@@ -10,6 +11,7 @@ import ru.vladrus13.html.utils.NestedHTMLFile
 import ru.vladrus13.model.bean.SQLTypesAttributes
 import ru.vladrus13.model.bean.TypedAttributes
 import ru.vladrus13.model.key.Keys.Companion.getKeys
+import ru.vladrus13.model.utils.pathToResources
 import ru.vladrus13.pictures.imageTable
 import ru.vladrus13.pictures.utils.Font.Companion.jetbrainsBold
 import ru.vladrus13.pictures.utils.Font.Companion.jetbrainsBoldItalic
@@ -48,6 +50,10 @@ object TablesCreate : NestedHTMLFile(
                 hr()
                 hr()
             }
+            h3 {
+                +"Примерная картинка"
+            }
+            img(src = "preview.png", alt = "Здесь должна быть картинка")
         }
     )
 ) {
@@ -104,5 +110,8 @@ object TablesCreate : NestedHTMLFile(
             val imagePDM = imageTable(listPDM)
             ImageIO.write(imagePDM, "png", path.resolve("${relation.name}-pdm.png").toFile())
         }
+        val pathOfPreview = pathToResources.resolve("input").resolve("pic").resolve("preview.png")
+        val image = ImageIO.read(pathOfPreview.toFile())
+        ImageIO.write(image, "png", path.resolve("preview.png").toFile())
     }
 }
